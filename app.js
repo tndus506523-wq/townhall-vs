@@ -130,7 +130,7 @@ function handleNameState(nickname) {
                         showTyping();
                         setTimeout(() => {
                             removeTyping();
-                            addBotMessage('이번 타운홀 미팅에서도 우리 본부가 어떻게 하면 Comfort Zone을 벗어나 한발 더 도약할 수 있을지 그 방법에 대해 논의해보고자 합니다.<br><br>그 전에, <strong>${nickname}</strong>님의 소중한 의견이 필요합니다! 🙌');
+                            addBotMessage(`이번 타운홀 미팅에서도 우리 본부가 어떻게 하면 Comfort Zone을 벗어나 한발 더 도약할 수 있을지 그 방법에 대해 논의해보고자 합니다.<br><br>그 전에, <strong>${nickname}</strong>님의 소중한 의견이 필요합니다! 🙌`);
 
                             setTimeout(() => {
                                 showTyping();
