@@ -33,6 +33,138 @@ body {
     overflow: hidden;
 }
 
+/* ===== COVER SCREEN ===== */
+#cover-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(145deg, #fff 0%, #fce4ec 50%, #fff0f3 100%);
+    z-index: 100;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+#cover-screen.fade-out {
+    opacity: 0;
+    transform: scale(0.96);
+    pointer-events: none;
+}
+
+.cover-content {
+    text-align: center;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.cover-logo {
+    font-size: 72px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.cover-sub {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.cover-title {
+    font-family: 'Caveat', cursive;
+    font-size: 36px;
+    color: var(--primary-color);
+    line-height: 1.2;
+}
+
+.cover-date-badge {
+    background-color: rgba(165, 0, 52, 0.1);
+    color: var(--primary-color);
+    border: 1.5px solid rgba(165, 0, 52, 0.3);
+    padding: 8px 22px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+#start-btn {
+    margin-top: 8px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 16px 48px;
+    border-radius: 30px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 8px 24px rgba(165, 0, 52, 0.3);
+    transition: all 0.2s ease;
+}
+
+#start-btn:hover {
+    background-color: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(165, 0, 52, 0.4);
+}
+
+#start-btn:active {
+    transform: scale(0.97);
+}
+
+/* ===== NOTICE BAR ===== */
+.notice-bar {
+    background-color: #fff8e1;
+    border-bottom: 1px solid #ffe57f;
+    color: #795548;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px 16px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* ===== PROGRESS MILESTONE TOAST ===== */
+#milestone-toast {
+    position: absolute;
+    top: 52px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-12px);
+    background: linear-gradient(135deg, #A50034, #c8102e);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 20px;
+    border-radius: 30px;
+    white-space: nowrap;
+    box-shadow: 0 6px 20px rgba(165, 0, 52, 0.35);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#milestone-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+
 .chat-container {
     width: 100%;
     max-width: 480px;
