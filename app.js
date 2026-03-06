@@ -47,8 +47,8 @@ function initChat() {
         setTimeout(() => {
             removeTyping();
             addBotMessage('원활한 진행을 위해 먼저 <strong>EP ID</strong>를 입력해 주시겠어요?<br><span style="color:#888; font-size:13px;">(예: 12345)</span>');
-        }, 1200);
-    }, 600);
+        }, 500);
+    }, 300);
 }
 
 if (document.readyState === 'loading') {
@@ -92,7 +92,7 @@ function processUserInput(text) {
                 handleQ3State(text);
                 break;
         }
-    }, 1200); // Simulate bot typing delay
+    }, 500); // Simulate bot typing delay
 }
 
 function handleInitState(epId) {
@@ -131,14 +131,14 @@ function handleInitState(epId) {
                                         { text: '2. 음... 그래요 알아볼게요 🤔', value: 'maybe' }
                                     ], handleChoiceSelection);
                                     currentState = STATES.INTRO_COMFORT;
-                                }, 1000);
-                            }, 1500);
-                        }, 2500);
-                    }, 1500);
-                }, 2500);
-            }, 1000);
-        }, 1200);
-    }, 800);
+                                }, 600);
+                            }, 800);
+                        }, 1200);
+                    }, 800);
+                }, 1200);
+            }, 600);
+        }, 600);
+    }, 400);
 }
 
 function handleChoiceSelection(choiceData) {
@@ -158,9 +158,9 @@ function handleChoiceSelection(choiceData) {
                 addBotMessage('<strong>1. 여러분이 생각하는 우리 본부의 Comfort Zone은 무엇인가요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예시: 수주 경쟁력이 낮아요, 일하는 방식이 비효율적이에요, 귀찮아서 AI를 활용하지 않아요 등</span>');
                 currentState = STATES.Q1_COMFORT;
                 showTextInput();
-            }, 1500);
-        }, 800);
-    }, 1200);
+            }, 800);
+        }, 400);
+    }, 600);
 }
 
 function handleQ1State(text) {
@@ -174,8 +174,8 @@ function handleQ1State(text) {
             addBotMessage('<strong>2. 우리 본부가 Comfort Zone을 벗어나 Growth Zone으로 간다면 그 목적지는 어디일까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예시: 수주 경쟁력을 높여요, 지금 하는 일을 더 빠르고 효율적으로 해요 등</span>');
             currentState = STATES.Q2_GROWTH;
             showTextInput();
-        }, 1500);
-    }, 1000);
+        }, 800);
+    }, 500);
 }
 
 function handleQ2State(text) {
@@ -189,8 +189,8 @@ function handleQ2State(text) {
             addBotMessage('<strong>3. 개인적/업무적으로 올 한해 Comfort Zone을 벗어나 "이것만은 해보겠다!" 하는 다짐을 작성해주세요.</strong>');
             currentState = STATES.Q3_RESOLUTION;
             showTextInput();
-        }, 1500);
-    }, 1000);
+        }, 800);
+    }, 500);
 }
 
 function handleQ3State(text) {
@@ -214,10 +214,10 @@ function handleQ3State(text) {
                     removeTyping();
                     addBotMessage('작성해주신 서베이 내용을 전송하고 있습니다... 🚀');
                     submitSurveyData();
-                }, 1500);
-            }, 2000);
-        }, 2000);
-    }, 1500);
+                }, 800);
+            }, 800);
+        }, 800);
+    }, 600);
 }
 
 // UI Helpers
