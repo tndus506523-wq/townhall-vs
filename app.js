@@ -1,4 +1,4 @@
-// State Definitions
+﻿// State Definitions
 const STATES = {
     INIT: 0,
     INTRO_GREETING: 1,
@@ -14,7 +14,7 @@ const STATES = {
 // Global Data Store
 const surveyData = {
     name: '',
-    epId: '미입력',
+    epId: '誘몄엯??,
     comfortZoneChoice: '',
     q1Answer: '',
     q2Answer: '',
@@ -33,9 +33,9 @@ const sendButton = document.getElementById('send-button');
 
 // Mock Data for EP Lookup
 const mockEmployeeDB = {
-    '12345': '홍길동',
-    '99999': '김엘지',
-    'admin': '관리자'
+    '12345': '?띻만??,
+    '99999': '源?섏?',
+    'admin': '愿由ъ옄'
 };
 
 // Progress Bar
@@ -51,24 +51,24 @@ function initChat() {
     updateProgress(5);
 
     // System message style entry
-    const sysMsgHTML = `<div class="system-message">VS구성원님이 입장하셨습니다.</div>`;
+    const sysMsgHTML = `<div class="system-message">VS援ъ꽦?먮떂???낆옣?섏뀲?듬땲??</div>`;
     chatMessages.insertAdjacentHTML('beforeend', sysMsgHTML);
     scrollToBottom();
 
     showTyping();
     setTimeout(() => {
         removeTyping();
-        addBotMessage('Step out of your Comfort Zone, <strong>VS본부 구성원님!</strong>');
+        addBotMessage('Step out of your Comfort Zone, <strong>VS蹂몃? 援ъ꽦?먮떂!</strong>');
 
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage('👋 안녕하세요! 저는 VS본부 타운홀 미팅 정보를 안내해드릴 <strong>"쁘이"</strong>에요!');
+            addBotMessage('?몝 ?덈뀞?섏꽭?? ???VS蹂몃? ??댄? 誘명똿 ?뺣낫瑜??덈궡?대뱶由?<strong>"?섏씠"</strong>?먯슂!');
 
             setTimeout(() => {
                 showChoices([
-                    { text: '반가워 쁘이! 👋', value: 'hello' },
-                    { text: '그래서 너 누군데? 👀', value: 'who' }
+                    { text: '諛섍????섏씠! ?몝', value: 'hello' },
+                    { text: '洹몃옒?????꾧뎔?? ??', value: 'who' }
                 ], handleGreetingChoice);
                 currentState = STATES.INTRO_GREETING;
             }, 500);
@@ -131,13 +131,13 @@ function handleGreetingChoice(choiceData) {
 
     setTimeout(() => {
         removeTyping();
-        addBotMessage('3/30에 있을 타운홀 미팅에 대한 정보를 드리고, 여러분의 의견을 미리 들어보기 위해 왔어요.');
+        addBotMessage('3/30???덉쓣 ??댄? 誘명똿??????뺣낫瑜??쒕━怨? ?щ윭遺꾩쓽 ?섍껄??誘몃━ ?ㅼ뼱蹂닿린 ?꾪빐 ?붿뼱??');
 
         setTimeout(() => {
             showTyping();
             setTimeout(() => {
                 removeTyping();
-                addBotMessage('먼저, 제가 뭐라고 부르면 될까요? (성함 또는 닉네임을 입력해주세요!)<br><span style="color:#888; font-size:13px;">👉 예: VS박보검, 나는야코딩왕, 마곡동슈퍼맨 등</span>');
+                addBotMessage('癒쇱?, ?쒓? 萸먮씪怨?遺瑜대㈃ ?좉퉴?? (?깊븿 ?먮뒗 ?됰꽕?꾩쓣 ?낅젰?댁＜?몄슂!)<br><span style="color:#888; font-size:13px;">?몛 ?? VS諛뺣낫寃, ?섎뒗?쇱퐫?⑹솗, 留덇끝?숈뒋?쇰㎤ ??/span>');
                 currentState = STATES.ASK_NAME;
                 showTextInput();
             }, 600);
@@ -149,41 +149,23 @@ function handleNameState(nickname) {
     surveyData.name = nickname;
     updateProgress(30);
 
-    addBotMessage(`😄 반가워요, <strong>${nickname}</strong>님!`);
-
     setTimeout(() => {
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage('요즘 우리 본부 키워드가 <strong>“Comfort Zone 탈출”</strong>인거 아시나요?<br><br>심리학자 Judith Bardwick은 인간이 편안함에 오래 머물면 안정은 생기지만, 성장은 멈춘다고 말해요.');
+            addBotMessage(`?쁽 諛섍??뚯슂, <strong>${nickname}</strong>??<br>?붿쬁 ?곕━ 蹂몃? ?ㅼ썙?쒓? <strong>?쏞omfort Zone ?덉텧??/strong>?멸굅 ?꾩떆?섏슂?<br>?щ━?숈옄 Judith Bardwick? ?멸컙???몄븞?⑥뿉 ?ㅻ옒 癒몃Ъ硫??덉젙? ?앷린吏留? ?깆옣? 硫덉텣?ㅺ퀬 留먰빐??<br>洹몃옒???대쾲 ??댄??먯꽌??br>?몛 <strong>?쒖슦由щ뒗 ?대뼡 Comfort Zone???덇퀬, ?대뼸寃???諛????꾩빟??寃껋씤媛???/strong><br>?닿구 ?④퍡 ?댁빞湲고븯?ㅺ퀬 ?⑸땲??<br>洹??꾩뿉!<br>蹂멸꺽?곸씤 ?좊줎? ??댄??먯꽌 ?섍퀬,<br>?ъ쟾 ?뚮컢?낆? ? <strong>?섏씠</strong>? ?④퍡 媛蹂띻쾶 ?대낵源뚯슂? ?삇`);
 
             setTimeout(() => {
                 showTyping();
                 setTimeout(() => {
                     removeTyping();
-                    addBotMessage('그래서 이번 타운홀에서는<br>👉 <strong>“우리는 어떤 Comfort Zone에 있고, 어떻게 한 발 더 도약할 것인가?”</strong><br>이걸 함께 이야기하려고 합니다.');
-
-                    setTimeout(() => {
-                        showTyping();
-                        setTimeout(() => {
-                            removeTyping();
-                            addBotMessage('그 전에!<br>본격적인 토론은 타운홀에서 하고, 사전 워밍업은 저 <strong>쁘이</strong>와 함께 가볍게 해볼까요? 😎');
-
-                            setTimeout(() => {
-                                showTyping();
-                                setTimeout(() => {
-                                    removeTyping();
-                                    showChoices([
-                                        { text: '좋아 같이 해보자! 🚀', value: 'yes' },
-                                        { text: '음...어디 한번 해봐 🤔', value: 'maybe' }
-                                    ], handleComfortChoice);
-                                    currentState = STATES.INTRO_COMFORT;
-                                }, 600);
-                            }, 800);
-                        }, 1200);
-                    }, 800);
-                }, 1200);
-            }, 600);
+                    showChoices([
+                        { text: '醫뗭븘 媛숈씠 ?대낫?? ??', value: 'yes' },
+                        { text: '??..?대뵒 ?쒕쾲 ?대킄 ?쨺', value: 'maybe' }
+                    ], handleComfortChoice);
+                    currentState = STATES.INTRO_COMFORT;
+                }, 600);
+            }, 800);
         }, 600);
     }, 400);
 }
@@ -197,7 +179,7 @@ function handleComfortChoice(choiceData) {
 
     setTimeout(() => {
         removeTyping();
-        addBotMessage('🥁 <strong>Q1. 우리 본부의 Comfort Zone, 어디에 있다고 느끼세요?</strong> 솔직하게 적어주세요!<br><br><span style="color:#888; font-size:13px;">📝 예)<br>“매번 같은 보고,,,비슷한 방식만 반복해요”<br>“AI 써야 하는 건 아는데… 귀찮아요(인정 😅)”<br>“수주 경쟁력 개선이 필요해요”</span>');
+        addBotMessage('醫뗭븘?? 洹몃읆 ?댁젣 吏덈Ц ?ㅼ뼱媛묐땲??<br><br>?쪇 <strong>Q1. ?곕━ 蹂몃???Comfort Zone, ?대뵒???덈떎怨??먮겮?몄슂?</strong><br>?붿쭅?섍쾶 ?곸뼱二쇱꽭??<br><br><span style="color:#888; font-size:13px;">?뱷 ??<br>?쒕ℓ踰?媛숈? 蹂닿퀬,,,鍮꾩듂??諛⑹떇留?諛섎났?댁슂??br>?쏛I ?⑥빞 ?섎뒗 嫄??꾨뒗?겸?洹李?븘???몄젙 ?쁾)??br>?쒖닔二?寃쎌웳??媛쒖꽑???꾩슂?댁슂??/span>');
         currentState = STATES.Q1_COMFORT;
         showTextInput();
     }, 500);
@@ -206,13 +188,13 @@ function handleComfortChoice(choiceData) {
 function handleQ1State(text) {
     surveyData.q1Answer = text;
     updateProgress(65);
-    addBotMessage('👍 좋아요! 그럼 두 번째 질문 갑니다.');
+    addBotMessage('?몟 醫뗭븘?? 洹몃읆 ??踰덉㎏ 吏덈Ц 媛묐땲??');
 
     setTimeout(() => {
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage('🚀 <strong>Q2. 본부가 Comfort Zone을 벗어난다면, 도착하고 싶은 ‘Growth Zone’은 어디인가요?</strong> (즉, 우리가 꿈꾸는 모습!)<br><br><span style="color:#888; font-size:13px;">📝 예)<br>“더 빠르고 효율적인 실행력!”<br>“수주 경쟁력 강화!”<br>“새로운 기술 학습과 도전 문화!”</span>');
+            addBotMessage('?? <strong>Q2. 蹂몃?媛 Comfort Zone??踰쀬뼱?쒕떎硫? ?꾩갑?섍퀬 ?띠? ?쁆rowth Zone?숈? ?대뵒?멸???</strong> (利? ?곕━媛 轅덇씀??紐⑥뒿!)<br><br><span style="color:#888; font-size:13px;">?뱷 ??<br>?쒕뜑 鍮좊Ⅴ怨??⑥쑉?곸씤 ?ㅽ뻾????br>?쒖닔二?寃쎌웳??媛뺥솕!??br>?쒖깉濡쒖슫 湲곗닠 ?숈뒿怨??꾩쟾 臾명솕!??/span>');
             currentState = STATES.Q2_GROWTH;
             showTextInput();
         }, 800);
@@ -222,13 +204,13 @@ function handleQ1State(text) {
 function handleQ2State(text) {
     surveyData.q2Answer = text;
     updateProgress(80);
-    addBotMessage('🔥 좋은 목표예요! 자, 마지막입니다.');
+    addBotMessage('?뵦 醫뗭? 紐⑺몴?덉슂! ?? ?댁젣 留덉?留?吏덈Ц?댁뿉??議곌툑留????붿씠??');
 
     setTimeout(() => {
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage(`🌱 <strong>Q3. ${surveyData.name}님이 올해 벗어나보고 싶은 개인 혹은 업무 Comfort Zone은 무엇인가요?</strong> ‘아주 작은 한 걸음’도 좋아요.<br><br><span style="color:#888; font-size:13px;">📝 예)<br>“AI 도구 매일 10분 써보기!”<br>“회의에서 한 번은 내 의견 말하기!”<br>“새로운 프로세스 시범 적용!”</span>`);
+            addBotMessage(`?뙮 <strong>Q3. ${surveyData.name}?섏씠 ?ы빐 踰쀬뼱?섎낫怨??띠? 媛쒖씤 ?뱀? ?낅Т Comfort Zone? 臾댁뾿?멸???</strong> ?섏븘二??묒? ??嫄몄쓬?숇룄 醫뗭븘??<br><br><span style="color:#888; font-size:13px;">?뱷 ??<br>?쏛I ?꾧뎄 留ㅼ씪 10遺??⑤낫湲???br>?쒗쉶?섏뿉????踰덉? ???섍껄 留먰븯湲???br>?쒖깉濡쒖슫 ?꾨줈?몄뒪 ?쒕쾾 ?곸슜!??/span>`);
             currentState = STATES.Q3_RESOLUTION;
             showTextInput();
         }, 800);
@@ -238,22 +220,21 @@ function handleQ2State(text) {
 function handleQ3State(text) {
     surveyData.q3Answer = text;
     updateProgress(90);
-    addBotMessage('🎉 모든 답변 잘 저장했습니다! 정말 감사합니다.');
 
     setTimeout(() => {
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage('마지막으로, 저랑 대화를 나눠주신 분 중에 저에게 잘해주신 분께는 🎁 <strong>추첨을 위한 선물</strong>을 드리려고 해요.<br><br>선물 받고 싶으신 분은 <strong>EP ID(사번)</strong>를 입력해주세요!<br><span style="color:#888; font-size:13px;">(개인정보는 오직 선물추첨을 위해 활용됩니다. 원치 않으면 “건너뛰기" 버튼을 눌러주세요)</span>');
+            addBotMessage(`?뮍 ${surveyData.name}?섏씠?쇰㈃ ?뺣쭚 ???대궪 ???덉쓣 寃?媛숈븘?? ?꾩쟾 湲곕??쇱슂! ?삃<br><br>留덉?留됱쑝濡?<br>?????붾? ?섎닠二쇱떊 遺?以묒뿉 ??먭쾶 ?섑빐二쇱떊 遺꾧퍡???럞 <strong>異붿꺼???꾪븳 ?좊Ъ</strong>???쒕━?ㅺ퀬 ?댁슂. ?좊Ъ 諛쏄퀬 ?띠쑝??遺꾩? <strong>EP ID(?щ쾲)</strong>瑜??낅젰?댁＜?몄슂!<br><span style="color:#888; font-size:13px;">(媛쒖씤?뺣낫???ㅼ쭅 ?좊Ъ異붿꺼???꾪빐 ?쒖슜?⑸땲?? ?먯튂 ?딆쑝硫??쒓굔?덈쎇湲? 踰꾪듉???뚮윭二쇱꽭??</span>`);
 
             showChoices([
-                { text: '건너뛰기 ⏭️', value: 'skip' }
+                { text: '嫄대꼫?곌린 ??툘', value: 'skip' }
             ], handlePrizeEpIdState);
 
             currentState = STATES.PRIZE_EP_ID;
             showTextInput(); // allow both text input or choice button
-        }, 800);
-    }, 800);
+        }, 1000);
+    }, 700);
 }
 
 function handlePrizeEpIdState(input) {
@@ -264,35 +245,35 @@ function handlePrizeEpIdState(input) {
 
     hideChoices();
 
-    if (text !== 'skip' && text.trim() && text.trim() !== "건너뛰기" && text.trim() !== "건너뛰기 ⏭️") {
+    if (text !== 'skip' && text.trim() && text.trim() !== "嫄대꼫?곌린" && text.trim() !== "嫄대꼫?곌린 ??툘") {
         surveyData.epId = text;
     } else {
-        surveyData.epId = "건너뛰기";
+        surveyData.epId = "嫄대꼫?곌린";
     }
 
     updateProgress(100);
 
     userInput.disabled = true;
     sendButton.disabled = true;
-    userInput.placeholder = "서베이가 완료되었습니다.";
+    userInput.placeholder = "?쒕쿋?닿? ?꾨즺?섏뿀?듬땲??";
     showTextInput();
 
     setTimeout(() => {
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage('아, 참! 마지막까지 와주신 여러분들께만 타운홀 미팅 정보를 알려드릴게요(속닥)<br><br>📅 <strong>[타운홀 미팅 안내]</strong><br>일시: 3월 30일 월요일 14:00~15:30<br>장소: 마곡 사이언스파크 B1 오디토리움<br><span style="color:#888; font-size:13px;">온라인 접속 장소 추후 안내 예정</span><br><br>현장에서 <strong>' + surveyData.name + '</strong>님만의 Growth Zone 선언, 꼭 들려주세요! 🚀💙');
+            addBotMessage('?? 李? 留덉?留됯퉴吏 ?二쇱떊 ?щ윭遺꾨뱾猿섎쭔 ??댄? 誘명똿 ?뺣낫瑜??뚮젮?쒕┫寃뚯슂(?띾떏) ?ㄻ<br><br>?뱟 <strong>[??댄? 誘명똿 ?덈궡]</strong><br>?쇱떆: 3??30???붿슂??14:00~15:30<br>?μ냼: 留덇끝 ?ъ씠?몄뒪?뚰겕 B1 ?ㅻ뵒?좊━?<br><span style="color:#888; font-size:13px;">?⑤씪???묒냽 ?μ냼 異뷀썑 ?덈궡 ?덉젙</span><br><br>?꾩옣?먯꽌 <strong>' + surveyData.name + '</strong>?섎쭔??Growth Zone ?좎뼵, 瑗??ㅻ젮二쇱꽭?? ???뮋');
 
             setTimeout(() => {
                 showTyping();
                 setTimeout(() => {
                     removeTyping();
-                    addBotMessage('작성해주신 서베이 내용을 전송하고 있습니다... 🚀');
+                    addBotMessage('?묒꽦?댁＜???쒕쿋???댁슜???덉쟾?섍쾶 ?꾩넚?섍퀬 ?덉뼱??.. ??);
                     submitSurveyData();
-                }, 800);
-            }, 1500);
-        }, 800);
-    }, 600);
+                }, 1000);
+            }, 2000);
+        }, 1000);
+    }, 800);
 }
 
 // UI Helpers
@@ -330,7 +311,7 @@ function addBotMessage(text) {
         <div class="message-wrapper message-bot">
             <div class="message-content-wrapper">
                 <div class="bot-avatar" style="font-size: 18px; background-color: #f7f8fa; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.3);">
-                   🐰✌️
+                   ?뚳툘
                 </div>
                 <div class="message">${text}</div>
             </div>
@@ -355,7 +336,7 @@ function showTyping() {
         <div class="message-wrapper message-bot" id="typing-indicator">
             <div class="message-content-wrapper">
                 <div class="bot-avatar" style="font-size: 18px; background-color: #f7f8fa; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.3);">
-                    🐰✌️
+                    ?뚳툘
                 </div>
                 <div class="message" style="padding: 10px 16px;">
                     <div class="typing-indicator">
@@ -388,12 +369,12 @@ async function submitSurveyData() {
     try {
         const payload = {
             "EP_ID": surveyData.epId,
-            "이름": surveyData.name,
-            "선택형답변": surveyData.comfortZoneChoice,
-            "Q1(현재 Comfort Zone)": surveyData.q1Answer,
-            "Q2(목표 Growth Zone)": surveyData.q2Answer,
-            "Q3(올해의 다짐)": surveyData.q3Answer,
-            "제출시간": new Date().toLocaleString('ko-KR')
+            "?대쫫": surveyData.name,
+            "?좏깮?뺣떟蹂": surveyData.comfortZoneChoice,
+            "Q1(?꾩옱 Comfort Zone)": surveyData.q1Answer,
+            "Q2(紐⑺몴 Growth Zone)": surveyData.q2Answer,
+            "Q3(?ы빐???ㅼ쭚)": surveyData.q3Answer,
+            "?쒖텧?쒓컙": new Date().toLocaleString('ko-KR')
         };
 
         if (ENDPOINT_URL.includes("YOUR_FORM_ID_HERE")) {
@@ -402,7 +383,7 @@ async function submitSurveyData() {
                 showTyping();
                 setTimeout(() => {
                     removeTyping();
-                    addBotMessage('✅ (테스트 모드) 데이터 전송이 완료되었습니다!');
+                    addBotMessage('??(?뚯뒪??紐⑤뱶) ?곗씠???꾩넚???꾨즺?섏뿀?듬땲??');
                     currentState = STATES.OUTRO;
                 }, 1000);
             }, 1000);
@@ -423,7 +404,7 @@ async function submitSurveyData() {
                 showTyping();
                 setTimeout(() => {
                     removeTyping();
-                    addBotMessage('✅ 성공적으로 의견이 제출되었습니다! 참여해주셔서 감사합니다.');
+                    addBotMessage('??<strong>' + surveyData.name + '?섏쓽 ?λ뵸???섍껄???깃났?곸쑝濡??묒닔?섏뿀?댁슂!</strong> ?ㅻ뒛 ?꾩쟾?댁＜?붿꽌 ?뺣쭚 留섏씠 ~?꾨┃~?ㅼ슂 媛먮룞 ?⑥쫱 ??<br><br>?댁젣 ?섏씠吏瑜??レ쑝?붾룄 愿ъ갖?꾩슂 :)');
                     currentState = STATES.OUTRO;
                 }, 1000);
             }, 1000);
@@ -437,9 +418,10 @@ async function submitSurveyData() {
             showTyping();
             setTimeout(() => {
                 removeTyping();
-                addBotMessage('⚠️ 죄송합니다. 데이터 전송 중 오류가 발생했습니다. 나중에 다시 시도해주세요.');
+                addBotMessage('?좑툘 二꾩넚?⑸땲?? ?곗씠???꾩넚 以??ㅻ쪟媛 諛쒖깮?덉뒿?덈떎. ?섏쨷???ㅼ떆 ?쒕룄?댁＜?몄슂.');
                 currentState = STATES.OUTRO;
             }, 1000);
         }, 1000);
     }
 }
+
