@@ -310,7 +310,7 @@ function addBotMessage(text) {
     const msgHTML = `
         <div class="message-wrapper message-bot">
             <div class="message-content-wrapper">
-                <div class="bot-avatar" style="font-size: 18px; background-color: #f7f8fa; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.3);">
+                <div class="bot-avatar" style="font-size: 22px; background-color: #fff0f3; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.2);">
                    ?뚳툘
                 </div>
                 <div class="message">${text}</div>
@@ -335,7 +335,7 @@ function showTyping() {
     const msgHTML = `
         <div class="message-wrapper message-bot" id="typing-indicator">
             <div class="message-content-wrapper">
-                <div class="bot-avatar" style="font-size: 18px; background-color: #f7f8fa; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.3);">
+                <div class="bot-avatar" style="font-size: 22px; background-color: #fff0f3; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.2);">
                     ?뚳툘
                 </div>
                 <div class="message" style="padding: 10px 16px;">
@@ -424,4 +424,6 @@ async function submitSurveyData() {
         }, 1000);
     }
 }
+
+
 
