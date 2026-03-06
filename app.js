@@ -52,6 +52,19 @@ async function botSay(text, pauseAfter = 800) {
     addBotMessage(text);
 }
 
+// ===== COVER → CHAT TRANSITION =====
+function startSurvey() {
+    const cover = document.getElementById('cover-screen');
+    const chat = document.getElementById('chat-screen');
+
+    cover.classList.add('fade-out');
+    setTimeout(() => {
+        cover.style.display = 'none';
+        chat.classList.remove('hidden');
+        initChat();
+    }, 400);
+}
+
 // Initialization
 function initChat() {
     updateProgress(5);
@@ -72,11 +85,6 @@ function initChat() {
     })();
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initChat);
-} else {
-    initChat();
-}
 
 // Event Listeners
 chatForm.addEventListener('submit', (e) => {
