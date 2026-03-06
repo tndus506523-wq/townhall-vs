@@ -286,8 +286,8 @@ function addBotMessage(text) {
     const msgHTML = `
         <div class="message-wrapper message-bot">
             <div class="message-content-wrapper">
-                <div class="bot-avatar">
-                   <img src="ellie_avatar.png" alt="엘리">
+                <div class="bot-avatar" style="font-size: 18px; background-color: #A50034; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.3);">
+                   👩‍💻
                 </div>
                 <div class="message">${text}</div>
             </div>
@@ -311,8 +311,8 @@ function showTyping() {
     const msgHTML = `
         <div class="message-wrapper message-bot" id="typing-indicator">
             <div class="message-content-wrapper">
-                <div class="bot-avatar">
-                    <img src="ellie_avatar.png" alt="엘리">
+                <div class="bot-avatar" style="font-size: 18px; background-color: #A50034; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.3);">
+                    👩‍💻
                 </div>
                 <div class="message" style="padding: 10px 16px;">
                     <div class="typing-indicator">
