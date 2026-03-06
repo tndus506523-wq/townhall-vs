@@ -1,18 +1,19 @@
 // State Definitions
 const STATES = {
     INIT: 0,
-    CHECK_EP: 1,
+    CHECK_NAME: 1,
     INTRO_COMFORT: 2,
     Q1_COMFORT: 3,
     Q2_GROWTH: 4,
     Q3_RESOLUTION: 5,
-    OUTRO: 6
+    PRIZE_EP_ID: 6,
+    OUTRO: 7
 };
 
 // Global Data Store
 const surveyData = {
-    epId: '',
     name: '',
+    epId: '미입력',
     comfortZoneChoice: '',
     q1Answer: '',
     q2Answer: '',
@@ -36,8 +37,17 @@ const mockEmployeeDB = {
     'admin': '관리자'
 };
 
+// Progress Bar
+function updateProgress(percentage) {
+    const bar = document.getElementById('progress-bar');
+    if (bar) {
+        bar.style.width = percentage + '%';
+    }
+}
+
 // Initialization
 function initChat() {
+    updateProgress(10);
     showTyping();
     setTimeout(() => {
         removeTyping();
@@ -46,7 +56,7 @@ function initChat() {
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage('원활한 진행을 위해 먼저 <strong>EP ID</strong>를 입력해 주시겠어요?<br><span style="color:#888; font-size:13px;">(예: 12345)</span>');
+            addBotMessage('원활한 진행을 위해 먼저 <strong>성함 혹은 제가 부를 닉네임</strong>을 입력해 주시겠어요?<br><span style="color:#888; font-size:13px;">(예: 홍길동, 제이지)</span>');
         }, 500);
     }, 300);
 }
@@ -80,7 +90,7 @@ function processUserInput(text) {
 
         switch (currentState) {
             case STATES.INIT:
-                handleInitState(text);
+                handleNameState(text);
                 break;
             case STATES.Q1_COMFORT:
                 handleQ1State(text);
@@ -91,17 +101,18 @@ function processUserInput(text) {
             case STATES.Q3_RESOLUTION:
                 handleQ3State(text);
                 break;
+            case STATES.PRIZE_EP_ID:
+                handlePrizeEpIdState(text);
+                break;
         }
     }, 500); // Simulate bot typing delay
 }
 
-function handleInitState(epId) {
-    surveyData.epId = epId;
-    // Mock lookup
-    const name = mockEmployeeDB[epId] || '임직원'; // Fallback
-    surveyData.name = name;
+function handleNameState(nickname) {
+    surveyData.name = nickname;
+    updateProgress(20);
 
-    addBotMessage(`반가워요! <strong>${name}</strong>님! 😊`);
+    addBotMessage(`반가워요! <strong>${nickname}</strong>님! 😊`);
 
     setTimeout(() => {
         showTyping();
@@ -119,7 +130,7 @@ function handleInitState(epId) {
                         showTyping();
                         setTimeout(() => {
                             removeTyping();
-                            addBotMessage('이번 타운홀 미팅에서도 우리 본부가 어떻게 하면 Comfort Zone을 벗어나 한발 더 도약할 수 있을지 그 방법에 대해 논의해보고자 합니다.<br><br>그 전에, 여러분의 소중한 의견이 필요합니다! 🙌');
+                            addBotMessage('이번 타운홀 미팅에서도 우리 본부가 어떻게 하면 Comfort Zone을 벗어나 한발 더 도약할 수 있을지 그 방법에 대해 논의해보고자 합니다.<br><br>그 전에, <strong>${nickname}</strong>님의 소중한 의견이 필요합니다! 🙌');
 
                             setTimeout(() => {
                                 showTyping();
@@ -146,6 +157,7 @@ function handleChoiceSelection(choiceData) {
     surveyData.comfortZoneChoice = choiceData.text;
     hideChoices();
     showTyping();
+    updateProgress(35);
 
     setTimeout(() => {
         removeTyping();
@@ -165,6 +177,7 @@ function handleChoiceSelection(choiceData) {
 
 function handleQ1State(text) {
     surveyData.q1Answer = text;
+    updateProgress(55);
     addBotMessage('솔직한 의견 감사합니다. 그렇다면 두 번째 질문입니다. ✨');
 
     setTimeout(() => {
@@ -180,6 +193,7 @@ function handleQ1State(text) {
 
 function handleQ2State(text) {
     surveyData.q2Answer = text;
+    updateProgress(75);
     addBotMessage('멋진 목표네요! 이제 마지막 질문입니다. 💪');
 
     setTimeout(() => {
@@ -195,7 +209,25 @@ function handleQ2State(text) {
 
 function handleQ3State(text) {
     surveyData.q3Answer = text;
+    updateProgress(90);
     addBotMessage('소중한 다짐과 의견들을 모두 잘 기록했습니다! 참여해 주셔서 정말 감사합니다. 🎉');
+
+    setTimeout(() => {
+        showTyping();
+        setTimeout(() => {
+            removeTyping();
+            addBotMessage('🎁 서베이에 참여해주신 분들 중 <strong>추첨을 통해 소정의 상품</strong>을 드릴 예정입니다!<br>원하시는 분께서는 <strong>EP ID (사번)</strong>를 작성해주세요.<br><span style="color:#888; font-size:13px;">(원치 않으시면 "건너뛰기"라고 적어주세요!)</span>');
+            currentState = STATES.PRIZE_EP_ID;
+            showTextInput();
+        }, 800);
+    }, 800);
+}
+
+function handlePrizeEpIdState(text) {
+    if (text.trim() && text.trim() !== "건너뛰기") {
+        surveyData.epId = text;
+    }
+    updateProgress(100);
 
     userInput.disabled = true;
     sendButton.disabled = true;
@@ -255,7 +287,7 @@ function addBotMessage(text) {
         <div class="message-wrapper message-bot">
             <div class="message-content-wrapper">
                 <div class="bot-avatar">
-                   엘리
+                   <img src="ellie_avatar.png" alt="엘리">
                 </div>
                 <div class="message">${text}</div>
             </div>
@@ -280,7 +312,7 @@ function showTyping() {
         <div class="message-wrapper message-bot" id="typing-indicator">
             <div class="message-content-wrapper">
                 <div class="bot-avatar">
-                    엘리
+                    <img src="ellie_avatar.png" alt="엘리">
                 </div>
                 <div class="message" style="padding: 10px 16px;">
                     <div class="typing-indicator">
