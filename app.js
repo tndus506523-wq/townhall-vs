@@ -1,13 +1,14 @@
 // State Definitions
 const STATES = {
     INIT: 0,
-    CHECK_NAME: 1,
-    INTRO_COMFORT: 2,
-    Q1_COMFORT: 3,
-    Q2_GROWTH: 4,
-    Q3_RESOLUTION: 5,
-    PRIZE_EP_ID: 6,
-    OUTRO: 7
+    INTRO_GREETING: 1,
+    ASK_NAME: 2,
+    INTRO_COMFORT: 3,
+    Q1_COMFORT: 4,
+    Q2_GROWTH: 5,
+    Q3_RESOLUTION: 6,
+    PRIZE_EP_ID: 7,
+    OUTRO: 8
 };
 
 // Global Data Store
@@ -47,18 +48,32 @@ function updateProgress(percentage) {
 
 // Initialization
 function initChat() {
-    updateProgress(10);
+    updateProgress(5);
+
+    // System message style entry
+    const sysMsgHTML = `<div class="system-message">VS구성원님이 입장하셨습니다.</div>`;
+    chatMessages.insertAdjacentHTML('beforeend', sysMsgHTML);
+    scrollToBottom();
+
     showTyping();
     setTimeout(() => {
         removeTyping();
-        addBotMessage('안녕하세요! LG전자 타운홀 미팅 사전 서베이 챗봇 <strong>엘리</strong>입니다. 💬');
+        addBotMessage('Step out of your Comfort Zone, <strong>VS본부 구성원님!</strong>');
 
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage('원활한 진행을 위해 먼저 <strong>성함 혹은 제가 부를 닉네임</strong>을 입력해 주시겠어요?<br><span style="color:#888; font-size:13px;">(예: 홍길동, 제이지)</span>');
-        }, 500);
-    }, 300);
+            addBotMessage('👋 안녕하세요! 저는 VS본부 타운홀 미팅 정보를 안내해드릴 <strong>"쁘이"</strong>에요!');
+
+            setTimeout(() => {
+                showChoices([
+                    { text: '반가워 쁘이! 👋', value: 'hello' },
+                    { text: '그래서 너 누군데? 👀', value: 'who' }
+                ], handleGreetingChoice);
+                currentState = STATES.INTRO_GREETING;
+            }, 500);
+        }, 800);
+    }, 600);
 }
 
 if (document.readyState === 'loading') {
@@ -89,7 +104,7 @@ function processUserInput(text) {
         removeTyping();
 
         switch (currentState) {
-            case STATES.INIT:
+            case STATES.ASK_NAME:
                 handleNameState(text);
                 break;
             case STATES.Q1_COMFORT:
@@ -108,39 +123,60 @@ function processUserInput(text) {
     }, 500); // Simulate bot typing delay
 }
 
+function handleGreetingChoice(choiceData) {
+    addUserMessage(choiceData.text);
+    hideChoices();
+    showTyping();
+    updateProgress(15);
+
+    setTimeout(() => {
+        removeTyping();
+        addBotMessage('3/30에 있을 타운홀 미팅에 대한 정보를 드리고, 여러분의 의견을 미리 들어보기 위해 왔어요.');
+
+        setTimeout(() => {
+            showTyping();
+            setTimeout(() => {
+                removeTyping();
+                addBotMessage('먼저, 제가 뭐라고 부르면 될까요? (성함 또는 닉네임을 입력해주세요!)<br><span style="color:#888; font-size:13px;">👉 예: VS박보검, 나는야코딩왕, 마곡동슈퍼맨 등</span>');
+                currentState = STATES.ASK_NAME;
+                showTextInput();
+            }, 600);
+        }, 500);
+    }, 500);
+}
+
 function handleNameState(nickname) {
     surveyData.name = nickname;
-    updateProgress(20);
+    updateProgress(30);
 
-    addBotMessage(`반가워요! <strong>${nickname}</strong>님! 😊`);
+    addBotMessage(`😄 반가워요, <strong>${nickname}</strong>님!`);
 
     setTimeout(() => {
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage('이번 타운홀 미팅 주제는 <strong>"Step out of Comfort Zone"</strong>입니다.');
+            addBotMessage('요즘 우리 본부 키워드가 <strong>“Comfort Zone 탈출”</strong>인거 아시나요?<br><br>심리학자 Judith Bardwick은 인간이 편안함에 오래 머물면 안정은 생기지만, 성장은 멈춘다고 말해요.');
 
             setTimeout(() => {
                 showTyping();
                 setTimeout(() => {
                     removeTyping();
-                    addBotMessage('심리학자 Judith Bardwick은 Comfort zone에 머무르는 경우 편안함을 느끼지만 성장이 정체되며, 이것을 벗어나면 <strong>Growth Zone</strong>으로 갈 수 있다고 말했는데요.');
+                    addBotMessage('그래서 이번 타운홀에서는<br>👉 <strong>“우리는 어떤 Comfort Zone에 있고, 어떻게 한 발 더 도약할 것인가?”</strong><br>이걸 함께 이야기하려고 합니다.');
 
                     setTimeout(() => {
                         showTyping();
                         setTimeout(() => {
                             removeTyping();
-                            addBotMessage(`이번 타운홀 미팅에서도 우리 본부가 어떻게 하면 Comfort Zone을 벗어나 한발 더 도약할 수 있을지 그 방법에 대해 논의해보고자 합니다.<br><br>그 전에, <strong>${nickname}</strong>님의 소중한 의견이 필요합니다! 🙌`);
+                            addBotMessage('그 전에!<br>본격적인 토론은 타운홀에서 하고, 사전 워밍업은 저 <strong>쁘이</strong>와 함께 가볍게 해볼까요? 😎');
 
                             setTimeout(() => {
                                 showTyping();
                                 setTimeout(() => {
                                     removeTyping();
-                                    addBotMessage('Comfort Zone에 대해서 알아보고 의견을 남겨보실래요?');
                                     showChoices([
-                                        { text: '1. 좋아요 궁금해요! 🚀', value: 'yes' },
-                                        { text: '2. 음... 그래요 알아볼게요 🤔', value: 'maybe' }
-                                    ], handleChoiceSelection);
+                                        { text: '좋아 같이 해보자! 🚀', value: 'yes' },
+                                        { text: '음...어디 한번 해봐 🤔', value: 'maybe' }
+                                    ], handleComfortChoice);
                                     currentState = STATES.INTRO_COMFORT;
                                 }, 600);
                             }, 800);
@@ -152,39 +188,31 @@ function handleNameState(nickname) {
     }, 400);
 }
 
-function handleChoiceSelection(choiceData) {
+function handleComfortChoice(choiceData) {
     addUserMessage(choiceData.text);
     surveyData.comfortZoneChoice = choiceData.text;
     hideChoices();
     showTyping();
-    updateProgress(35);
+    updateProgress(50);
 
     setTimeout(() => {
         removeTyping();
-        addBotMessage('좋습니다! 그럼 첫 번째 질문입니다.');
-
-        setTimeout(() => {
-            showTyping();
-            setTimeout(() => {
-                removeTyping();
-                addBotMessage('<strong>1. 여러분이 생각하는 우리 본부의 Comfort Zone은 무엇인가요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예시: 수주 경쟁력이 낮아요, 일하는 방식이 비효율적이에요, 귀찮아서 AI를 활용하지 않아요 등</span>');
-                currentState = STATES.Q1_COMFORT;
-                showTextInput();
-            }, 800);
-        }, 400);
-    }, 600);
+        addBotMessage('🥁 <strong>Q1. 우리 본부의 Comfort Zone, 어디에 있다고 느끼세요?</strong> 솔직하게 적어주세요!<br><br><span style="color:#888; font-size:13px;">📝 예)<br>“매번 같은 보고,,,비슷한 방식만 반복해요”<br>“AI 써야 하는 건 아는데… 귀찮아요(인정 😅)”<br>“수주 경쟁력 개선이 필요해요”</span>');
+        currentState = STATES.Q1_COMFORT;
+        showTextInput();
+    }, 500);
 }
 
 function handleQ1State(text) {
     surveyData.q1Answer = text;
-    updateProgress(55);
-    addBotMessage('솔직한 의견 감사합니다. 그렇다면 두 번째 질문입니다. ✨');
+    updateProgress(65);
+    addBotMessage('👍 좋아요! 그럼 두 번째 질문 갑니다.');
 
     setTimeout(() => {
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage('<strong>2. 우리 본부가 Comfort Zone을 벗어나 Growth Zone으로 간다면 그 목적지는 어디일까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예시: 수주 경쟁력을 높여요, 지금 하는 일을 더 빠르고 효율적으로 해요 등</span>');
+            addBotMessage('🚀 <strong>Q2. 본부가 Comfort Zone을 벗어난다면, 도착하고 싶은 ‘Growth Zone’은 어디인가요?</strong> (즉, 우리가 꿈꾸는 모습!)<br><br><span style="color:#888; font-size:13px;">📝 예)<br>“더 빠르고 효율적인 실행력!”<br>“수주 경쟁력 강화!”<br>“새로운 기술 학습과 도전 문화!”</span>');
             currentState = STATES.Q2_GROWTH;
             showTextInput();
         }, 800);
@@ -193,14 +221,14 @@ function handleQ1State(text) {
 
 function handleQ2State(text) {
     surveyData.q2Answer = text;
-    updateProgress(75);
-    addBotMessage('멋진 목표네요! 이제 마지막 질문입니다. 💪');
+    updateProgress(80);
+    addBotMessage('🔥 좋은 목표예요! 자, 마지막입니다.');
 
     setTimeout(() => {
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage('<strong>3. 개인적/업무적으로 올 한해 Comfort Zone을 벗어나 "이것만은 해보겠다!" 하는 다짐을 작성해주세요.</strong>');
+            addBotMessage(`🌱 <strong>Q3. ${surveyData.name}님이 올해 벗어나보고 싶은 개인 혹은 업무 Comfort Zone은 무엇인가요?</strong> ‘아주 작은 한 걸음’도 좋아요.<br><br><span style="color:#888; font-size:13px;">📝 예)<br>“AI 도구 매일 10분 써보기!”<br>“회의에서 한 번은 내 의견 말하기!”<br>“새로운 프로세스 시범 적용!”</span>`);
             currentState = STATES.Q3_RESOLUTION;
             showTextInput();
         }, 800);
@@ -210,23 +238,38 @@ function handleQ2State(text) {
 function handleQ3State(text) {
     surveyData.q3Answer = text;
     updateProgress(90);
-    addBotMessage('소중한 다짐과 의견들을 모두 잘 기록했습니다! 참여해 주셔서 정말 감사합니다. 🎉');
+    addBotMessage('🎉 모든 답변 잘 저장했습니다! 정말 감사합니다.');
 
     setTimeout(() => {
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage('🎁 서베이에 참여해주신 분들 중 <strong>추첨을 통해 소정의 상품</strong>을 드릴 예정입니다!<br>원하시는 분께서는 <strong>EP ID (사번)</strong>를 작성해주세요.<br><span style="color:#888; font-size:13px;">(원치 않으시면 "건너뛰기"라고 적어주세요!)</span>');
+            addBotMessage('마지막으로, 저랑 대화를 나눠주신 분 중에 저에게 잘해주신 분께는 🎁 <strong>추첨을 위한 선물</strong>을 드리려고 해요.<br><br>선물 받고 싶으신 분은 <strong>EP ID(사번)</strong>를 입력해주세요!<br><span style="color:#888; font-size:13px;">(개인정보는 오직 선물추첨을 위해 활용됩니다. 원치 않으면 “건너뛰기" 버튼을 눌러주세요)</span>');
+
+            showChoices([
+                { text: '건너뛰기 ⏭️', value: 'skip' }
+            ], handlePrizeEpIdState);
+
             currentState = STATES.PRIZE_EP_ID;
-            showTextInput();
+            showTextInput(); // allow both text input or choice button
         }, 800);
     }, 800);
 }
 
-function handlePrizeEpIdState(text) {
-    if (text.trim() && text.trim() !== "건너뛰기") {
-        surveyData.epId = text;
+function handlePrizeEpIdState(input) {
+    const text = typeof input === 'string' ? input : input.value;
+    if (typeof input !== 'string') {
+        addUserMessage(input.text);
     }
+
+    hideChoices();
+
+    if (text !== 'skip' && text.trim() && text.trim() !== "건너뛰기" && text.trim() !== "건너뛰기 ⏭️") {
+        surveyData.epId = text;
+    } else {
+        surveyData.epId = "건너뛰기";
+    }
+
     updateProgress(100);
 
     userInput.disabled = true;
@@ -238,7 +281,7 @@ function handlePrizeEpIdState(text) {
         showTyping();
         setTimeout(() => {
             removeTyping();
-            addBotMessage('<strong>[타운홀 미팅 안내]</strong><br>📅 <strong>일정:</strong> 3월 30일 월요일 14:00 ~ 15:30<br>📍 <strong>장소:</strong> 마곡 사이언스파크 B1 오디토리움<br><br>현장에서 뵙겠습니다! 🎈');
+            addBotMessage('아, 참! 마지막까지 와주신 여러분들께만 타운홀 미팅 정보를 알려드릴게요(속닥)<br><br>📅 <strong>[타운홀 미팅 안내]</strong><br>일시: 3월 30일 월요일 14:00~15:30<br>장소: 마곡 사이언스파크 B1 오디토리움<br><span style="color:#888; font-size:13px;">온라인 접속 장소 추후 안내 예정</span><br><br>현장에서 <strong>' + surveyData.name + '</strong>님만의 Growth Zone 선언, 꼭 들려주세요! 🚀💙');
 
             setTimeout(() => {
                 showTyping();
@@ -247,7 +290,7 @@ function handlePrizeEpIdState(text) {
                     addBotMessage('작성해주신 서베이 내용을 전송하고 있습니다... 🚀');
                     submitSurveyData();
                 }, 800);
-            }, 800);
+            }, 1500);
         }, 800);
     }, 600);
 }
@@ -286,8 +329,8 @@ function addBotMessage(text) {
     const msgHTML = `
         <div class="message-wrapper message-bot">
             <div class="message-content-wrapper">
-                <div class="bot-avatar" style="font-size: 18px; background-color: #A50034; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.3);">
-                   👩‍💻
+                <div class="bot-avatar" style="font-size: 18px; background-color: #f7f8fa; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.3);">
+                   🐰✌️
                 </div>
                 <div class="message">${text}</div>
             </div>
@@ -311,8 +354,8 @@ function showTyping() {
     const msgHTML = `
         <div class="message-wrapper message-bot" id="typing-indicator">
             <div class="message-content-wrapper">
-                <div class="bot-avatar" style="font-size: 18px; background-color: #A50034; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.3);">
-                    👩‍💻
+                <div class="bot-avatar" style="font-size: 18px; background-color: #f7f8fa; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.3);">
+                    🐰✌️
                 </div>
                 <div class="message" style="padding: 10px 16px;">
                     <div class="typing-indicator">
