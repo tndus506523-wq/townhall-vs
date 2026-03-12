@@ -901,7 +901,7 @@
                 await botSay('Comfort Zone에서 느끼는 익숙함은 <br>우리에게 안정감과 편안함을 주지만');
                 await botSay('<strong>성장과 발전</strong>은 두려움을 이겨내고<br>익숙하던 것을 넘어설 때 일어난다고 합니다.<br><span style="color:#888; font-size:13px;">(심리학자 Judith Bardwick)</span>');
                 await botSay('....그래서!');
-                await botSay('이번 타운홀에서는 <br>VS본부가 <strong>Comfort Zone을 벗어나<br>어떤 변화와 성장을 만들어가는지</strong><br>이야기 나눌 예정입니다. 🙌');
+                await botSay('이번 1분기 타운홀 미팅에서는 <br>VS본부가 <strong>Comfort Zone을 벗어나 어떤 변화/성장을</strong><br> 만들어가야하는지 이야기 나눌 예정입니다. 🙌');
                 await delay(400);
                 showChoices([{ text: '기대된다!! 🚀', value: 'yes' }, { text: '어렵네..알겠어 🤔', value: 'maybe' }], handleComfortChoice);
                 currentState = STATES.INTRO_COMFORT;
@@ -928,12 +928,12 @@
             (async () => {
                 await botSay('💪 멋있는 다짐이에요!');
                 await botSay('그럼 이제 본격 질문 들어갑니다! 🥁');
-                await botSay(`Q1. <strong>${surveyData.name}님, VS본부가 Comfort Zone을 벗어나 성장하기 위해서는 어떤 노력이 필요하다고 생각하시나요?</strong>`, 'name', `<strong>{name}님은 VS본부가 Comfort Zone을 벗어나 성장하기 위해서는 어떤 노력이 필요하다고 생각하시나요?</strong>`);
+                await botSay(`Q1. <strong>${surveyData.name}님, VS본부가 기존의 방식에서 벗어나 성장하기 위해서는 어떤 부분에서 노력이 필요하다고 생각하시나요?</strong>`, 'name', `<strong>{name}님은 VS본부가 기존의 방식에서 벗어나 성장하기 위해서는 어떤 부분에서 노력이 필요하다고 생각하시나요?</strong>`);
                 showChoices([
                     { text: '1️⃣ 수주 경쟁력 강화', value: '수주 경쟁력 강화' },
-                    { text: '2️⃣ 외부 환경 대응', value: '외부 환경 대응' },
+                    { text: '2️⃣ 외부 환경 / 위기 대응', value: '외부 환경 / 위기 대응' },
                     { text: '3️⃣ AX 활용 확대', value: 'AX 활용 확대' },
-                    { text: '4️⃣ 협업 방식 개선', value: '협업 방식 개선' },
+                    { text: '4️⃣ 협업 및 일하는 방식 개선', value: '협업 및 일하는 방식 개선' },
                     { text: '5️⃣ 기타 (직접 입력)', value: '기타' }
                 ], handleQ1Choice);
                 currentState = STATES.Q1_CHOICE;
@@ -942,7 +942,7 @@
 
         function handleQ1Choice(choiceData) {
             if (choiceData.value === '기타') {
-                choiceContainer.innerHTML = `<div class="inline-input-wrapper"><input type="text" class="inline-input" id="inline-q1-input" placeholder="성장을 위한 노력을 직접 입력해주세요"><button class="inline-confirm-btn" id="inline-q1-confirm">확인</button></div>`;
+                choiceContainer.innerHTML = `<div class="inline-input-wrapper"><input type="text" class="inline-input" id="inline-q1-input" placeholder="성장을 위해 필요한 노력을 직접 입력해주세요"><button class="inline-confirm-btn" id="inline-q1-confirm">확인</button></div>`;
                 const inputEl = document.getElementById('inline-q1-input');
                 const confirmBtn = document.getElementById('inline-q1-confirm');
                 setTimeout(() => inputEl.focus(), 100);
@@ -969,7 +969,7 @@
             (async () => {
                 await botSay(`<strong>${surveyData.name}</strong>님께서는 <strong>${surveyData.q1Answer}</strong>이(가) 필요하다고 생각하시는군요!`, 'name,q1Answer', `<strong>{name}</strong>님께서는 <strong>{q1Answer}</strong>이(가) 필요하다고 생각하시는군요!`);
                 await botSay('그렇다면....');
-                await botSay(`<strong>Q2. <u>${surveyData.q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 제품 포트폴리오 구성을 통한 수주 잔고 확대"<br>"AX 활용을 통한 개발 효율화"<br>"동료간 도움을 적극적으로 주고받음"</span>`, 'q1Answer', `<strong>Q2. <u>{q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 제품 포트폴리오 구성을 통한 수주 잔고 확대"<br>"AX 활용을 통한 개발 효율화"<br>"동료간 도움을 적극적으로 주고받음"</span>`);
+                await botSay(`<strong>Q2. <u>${surveyData.q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 기술과 선제적 영업을 통해 수주 잔고 확대함"<br>"AX 활용을 통한 개발 효율화를 이뤄냄"<br>"동료간 도움을 적극적으로 주고받음"</span>`, 'q1Answer', `<strong>Q2. <u>{q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 제품 포트폴리오 구성을 통한 수주 잔고 확대"<br>"AX 활용을 통한 개발 효율화"<br>"동료간 도움을 적극적으로 주고받음"</span>`);
                 currentState = STATES.Q2_GROWTH;
                 showTextInput();
             })();
@@ -981,7 +981,7 @@
             (async () => {
                 await botSay('좋아요! 우리는 꼭 해낼 수 있을거에요 🍀');
                 await botSay('자, 이제 마지막 질문이에요. 조금만 더 화이팅! 💪');
-                await botSay('<strong>Q3. 타운홀 미팅에서 경영진에게 궁금하거나 듣고 싶은 이야기가 있으신가요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"1분기 경영 실적이 궁금해요"<br>"26년 본부 방향성이 궁금해요"</span>');
+                await botSay('<strong>Q3. 1분기 타운홀 미팅에서 경영진에게 궁금하거나 듣고 싶은 이야기가 있으신가요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"1분기 경영 실적이 궁금해요"<br>"26년 본부 방향성이 궁금해요"</span>');
                 currentState = STATES.Q4_QUESTION;
                 showTextInput();
             })();
@@ -1010,8 +1010,8 @@
             sendButton.disabled = true;
             userInput.placeholder = '서베이가 완료되었습니다.';
             (async () => {
-                await botSay('이제 정말 끝났어요! 🎉');
-                await botSay('📅 <strong>[타운홀 미팅 안내]</strong><br>일시: 3월 30일 월요일 15:00~16:50');
+                await botSay('이제 정말 끝났어요! 🎉<br> 마지막으로 타운홀 미팅 일정을 알려드릴게요.');
+                await botSay('📅 <strong>[타운홀 미팅 안내]</strong><br>일시: 3월 30일 월요일 15:00~16:50<br>장소/온라인 주소는 추후 안내드릴게요.');
                 await botSay(`그럼 꼭 타운홀 미팅 현장에서 뵈어요, <strong>${surveyData.name}</strong>님! 🚀💙`, 'name', `그럼 꼭 타운홀 미팅 현장에서 뵈어요, <strong>{name}</strong>님! 🚀💙`);
                 await botSay('데이터를 안전하게 전송하고 있어요... ⏳');
                 submitSurveyData();
@@ -1085,7 +1085,7 @@
                 } else { throw new Error('Network response was not ok.'); }
             } catch (err) {
                 console.error("Survey submission failed:", err);
-                addBotMessage('⚠️ 전송 중 오류가 발생했습니다. 담당자에게 문의해 주세요.');
+                addBotMessage('⚠️ 전송 중 오류가 발생했습니다. 담당자에게 문의해 주세요. <br>(담당자 : VS EXG팀 양수연사원)');
             }
         }
     </script>
