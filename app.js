@@ -1,4 +1,4 @@
-﻿// State Definitions
+// State Definitions
 const STATES = {
     INIT: 0,
     INTRO_GREETING: 1,
@@ -277,7 +277,7 @@ function handleWarmupState(text) {
     (async () => {
         await botSay('💪 멋있는 다짐이에요! 우리 꼭 실천해봐요!');
         await botSay('그럼 이제 본격 질문 들어갑니다! 🥁');
-        await botSay(` <strong> Q1.${surveyData.name}님, VS본부가 Comfort Zone을 벗어나 성장하기 위해서는 어떤 노력이 필요하다고 생각하시나요?</strong><br><br>아래 중 하나를 선택해주세요!`, 'name', `<strong>{name}님은 VS본부가 Comfort Zone을 벗어나 성장하기 위해서는 어떤 노력이 필요하다고 생각하시나요?</strong><br><br>아래 중 하나를 선택해주세요!`);
+        await botSay(`<strong>Q1. ${surveyData.name}님, VS본부가 Comfort Zone을 벗어나 성장하기 위해서는 어떤 노력이 필요하다고 생각하시나요?</strong><br><br>아래 중 하나를 선택해주세요!`, 'name', `<strong>{name}님은 VS본부가 Comfort Zone을 벗어나 성장하기 위해서는 어떤 노력이 필요하다고 생각하시나요?</strong><br><br>아래 중 하나를 선택해주세요!`);
         await delay(300);
         showChoices([
             { text: '1️⃣ 수주 경쟁력 강화', value: '수주 경쟁력 강화' },
