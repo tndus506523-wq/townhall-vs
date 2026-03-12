@@ -1,627 +1,552 @@
-:root {
-    --primary-color: #A50034;
-    /* LG Red */
-    --primary-light: #c8102e;
-    --primary-dark: #820029;
-    --bg-color: #f0f2f5;
-    --chat-bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #f4f5f7 100%);
-    --msg-bot-bg: #ffffff;
-    --msg-bot-text: #2c2c2c;
-    --msg-user-bg: #A50034;
-    --msg-user-text: #ffffff;
-    --border-color: #e8eaf0;
-    --text-color: #333333;
-    --text-muted: #888888;
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-    --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.08);
-}
+// State Definitions
+const STATES = {
+    INIT: 0,
+    INTRO_GREETING: 1,
+    ASK_NAME: 2,
+    INTRO_COMFORT: 3,
+    WARMUP: 4,
+    Q1_CHOICE: 5,
+    Q1_OTHER: 6,
+    Q2_GROWTH: 7,
+    Q4_QUESTION: 8,
+    PRIZE_EP_ID: 9,
+    OUTRO: 10
+};
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+// Map states to surveyData keys for inline editing
+const STATE_DATA_MAP = {
+    [STATES.ASK_NAME]: 'name',
+    [STATES.INTRO_COMFORT]: 'comfortZoneChoice',
+    [STATES.WARMUP]: 'warmupAnswer',
+    [STATES.Q1_CHOICE]: 'q1Answer',
+    [STATES.Q1_OTHER]: 'q1Answer',
+    [STATES.Q2_GROWTH]: 'q2Answer',
+    [STATES.Q4_QUESTION]: 'q4Answer',
+    [STATES.PRIZE_EP_ID]: 'epId'
+};
 
-body {
-    font-family: 'Noto Sans KR', -apple-system, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
-}
+// Global Data Store
+let surveyData = {
+    name: '',
+    epId: '미입력',
+    comfortZoneChoice: '',
+    warmupAnswer: '',
+    q1Answer: '',
+    q2Answer: '',
+    q4Answer: ''
+};
 
-/* ===== COVER SCREEN ===== */
-#cover-screen {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(145deg, #fff 0%, #fce4ec 50%, #fff0f3 100%);
-    z-index: 100;
-    transition: opacity 0.4s ease, transform 0.4s ease;
-}
+let currentState = STATES.INIT;
 
-#cover-screen.fade-out {
-    opacity: 0;
-    transform: scale(0.96);
-    pointer-events: none;
-}
+// DOM Elements
+const chatMessages = document.getElementById('chat-messages');
+const chatForm = document.getElementById('chat-form');
+const userInput = document.getElementById('user-input');
+const choiceContainer = document.getElementById('choice-input-container');
+const dynamicInputContainer = document.getElementById('dynamic-input-container');
+const sendButton = document.getElementById('send-button');
 
-.hidden {
-    display: none !important;
-}
+console.log("Chat messages element:", chatMessages);
+console.log("Chat form element:", chatForm);
 
-.cover-content {
-    text-align: center;
-    padding: 40px 32px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-}
+// Progress Bar
+const milestoneMessages = {
+    25: '🌱 잘 하고 있어요! 25% 달성!',
+    50: '🔥 절반 왔어요! 파이팅!',
+    75: '💪 거의 다 왔어요! 75% 달성!',
+    100: '🎉 완료! 대단해요!'
+};
+const shownMilestones = new Set();
 
-.cover-logo {
-    font-size: 72px;
-    animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0);
+function updateProgress(percentage) {
+    const bar = document.getElementById('progress-bar');
+    if (bar) {
+        bar.style.width = percentage + '%';
     }
-
-    50% {
-        transform: translateY(-10px);
-    }
+    [25, 50, 75, 100].forEach(m => {
+        if (percentage >= m && !shownMilestones.has(m)) {
+            shownMilestones.add(m);
+            showMilestoneToast(milestoneMessages[m]);
+        }
+    });
 }
 
-.cover-sub {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-muted);
-    letter-spacing: 1px;
-    text-transform: uppercase;
+function showMilestoneToast(message) {
+    const toast = document.getElementById('milestone-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
 }
 
-.cover-title {
-    font-family: 'Caveat', cursive;
-    font-size: 36px;
-    color: var(--primary-color);
-    line-height: 1.2;
+// Helper: delay
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-.cover-date-badge {
-    background-color: rgba(165, 0, 52, 0.1);
-    color: var(--primary-color);
-    border: 1.5px solid rgba(165, 0, 52, 0.3);
-    padding: 8px 22px;
-    border-radius: 30px;
-    font-size: 15px;
-    font-weight: 700;
+// Helper: type then show message
+async function botSay(text, dependsOn = null, template = null) {
+    showTyping();
+    await delay(1000); // Slower speed as requested (35)
+    removeTyping();
+    addBotMessage(text, dependsOn, template);
 }
 
-#start-btn {
-    margin-top: 8px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 16px 48px;
-    border-radius: 30px;
-    font-size: 17px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-    box-shadow: 0 8px 24px rgba(165, 0, 52, 0.3);
-    transition: all 0.2s ease;
+// Inline Edit Logic
+function enableInlineEdit(stateId, btn) {
+    if (currentState === STATES.OUTRO) return;
+
+    const wrapper = btn.closest('.message-content-wrapper');
+    const msgDiv = wrapper.querySelector('.message');
+    const originalText = msgDiv.innerText;
+    const key = STATE_DATA_MAP[stateId];
+
+    // Replace text with input
+    msgDiv.innerHTML = `
+        <div class="user-edit-wrapper">
+            <input type="text" class="user-edit-input" value="${originalText}">
+            <button class="save-inline-btn">저장</button>
+        </div>
+    `;
+
+    const input = msgDiv.querySelector('input');
+    const saveBtn = msgDiv.querySelector('.save-inline-btn');
+    input.focus();
+
+    const saveAction = () => {
+        const newVal = input.value.trim();
+        if (!newVal) return;
+
+        // Update Data
+        surveyData[key] = newVal;
+
+        // Restore UI
+        msgDiv.innerHTML = newVal;
+
+        // Link logic: If multiple states share a key (like Q1_CHOICE and Q1_OTHER), ensure consistency
+        // Update all messages that depend on this key
+        updateDependentMessages(key);
+    };
+
+    saveBtn.onclick = (e) => {
+        e.stopPropagation();
+        saveAction();
+    };
+    input.onkeydown = (e) => {
+        if (e.key === 'Enter') saveAction();
+    };
 }
 
-#start-btn:hover {
-    background-color: var(--primary-light);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(165, 0, 52, 0.4);
+function updateDependentMessages(key) {
+    const dependents = document.querySelectorAll(`[data-depends-on*="${key}"]`);
+    dependents.forEach(el => {
+        let template = el.getAttribute('data-template');
+        if (!template) return;
+
+        // Replace all {key} in template
+        let newContent = template;
+        Object.keys(surveyData).forEach(k => {
+            const regex = new RegExp(`{${k}}`, 'g');
+            newContent = newContent.replace(regex, surveyData[k]);
+        });
+
+        el.innerHTML = newContent;
+    });
 }
 
-#start-btn:active {
-    transform: scale(0.97);
+// ===== COVER → CHAT TRANSITION =====
+function startSurvey() {
+    const cover = document.getElementById('cover-screen');
+    const chat = document.getElementById('chat-screen');
+
+    cover.classList.add('fade-out');
+    setTimeout(() => {
+        cover.style.display = 'none';
+        chat.classList.remove('hidden');
+        initChat();
+    }, 400);
 }
+window.startSurvey = startSurvey;
 
-/* ===== NOTICE BAR ===== */
-.notice-bar {
-    background-color: #fff8e1;
-    border-bottom: 1px solid #ffe57f;
-    color: #795548;
-    font-size: 12px;
-    font-weight: 500;
-    padding: 8px 16px;
-    line-height: 1.5;
-    text-align: center;
-}
+// Initialization
+function initChat() {
+    updateProgress(5);
 
-/* ===== PROGRESS MILESTONE TOAST ===== */
-#milestone-toast {
-    position: absolute;
-    top: 52px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-12px);
-    background: linear-gradient(135deg, #A50034, #c8102e);
-    color: white;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 8px 20px;
-    border-radius: 30px;
-    white-space: nowrap;
-    box-shadow: 0 6px 20px rgba(165, 0, 52, 0.35);
-    z-index: 50;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
+    const sysMsgHTML = `<div class="system-message">"타요"님이 채팅방에 입장하셨습니다.</div>`;
+    chatMessages.insertAdjacentHTML('beforeend', sysMsgHTML);
+    scrollToBottom();
 
-#milestone-toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-
-.chat-container {
-    width: 100%;
-    max-width: 480px;
-    height: 100vh;
-    background: var(--chat-bg-gradient);
-    display: flex;
-    flex-direction: column;
-    box-shadow: var(--shadow-md);
-    position: relative;
-}
-
-@media (min-width: 481px) {
-    .chat-container {
-        height: 92vh;
-        max-height: 850px;
-        border-radius: 24px;
-        overflow: hidden;
-    }
-}
-
-.progress-bar-container {
-    width: 100%;
-    height: 4px;
-    background-color: var(--border-color);
-    z-index: 11;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 0%;
-    background-color: var(--primary-color);
-    transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.chat-header {
-    background-color: #ffffff;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border-color);
-    z-index: 10;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-}
-
-.header-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.avatar-header img {
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid white;
-    box-shadow: var(--shadow-sm);
-}
-
-.header-info h1 {
-    font-size: 17px;
-    font-weight: 700;
-    margin-bottom: 2px;
-    color: #1a1a1a;
-    letter-spacing: -0.3px;
-}
-
-.status-indicator {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background-color: #10b981;
-    border-radius: 50%;
-    margin-right: 6px;
-    box-shadow: 0 0 4px rgba(16, 185, 129, 0.4);
-}
-
-.status-text {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-weight: 500;
-}
-
-.chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    scroll-behavior: smooth;
-
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    &::-webkit-scrollbar {
-        display: none;
-    }
-
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none;
-    /* IE and Edge */
-    scrollbar-width: none;
-    /* Firefox */
-}
-
-.message-wrapper {
-    display: flex;
-    max-width: 88%;
-    opacity: 0;
-    transform: translateY(10px);
-    animation: fadeIn 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-}
-
-.message-bot {
-    align-self: flex-start;
-}
-
-.message-bot .message-content-wrapper {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-}
-
-.system-message {
-    align-self: center;
-    background-color: rgba(0, 0, 0, 0.25);
-    color: #ffffff;
-    font-size: 13px;
-    padding: 8px 18px;
-    border-radius: 30px;
-    margin: 8px auto;
-    font-weight: 500;
-    text-align: center;
-    width: fit-content;
-    box-shadow: var(--shadow-sm);
-}
-
-.bot-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background-color: #f7f8fa;
-    box-shadow: var(--shadow-sm);
-    flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    margin-bottom: 4px;
-}
-
-.bot-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.message-user {
-    align-self: flex-end;
-}
-
-.message {
-    padding: 14px 18px;
-    font-size: 15px;
-    line-height: 1.55;
-    position: relative;
-    word-break: break-word;
-    letter-spacing: -0.2px;
-}
-
-.message strong {
-    font-weight: 700;
-    color: #ff0000;
-}
-
-.message-user .message strong {
-    color: #fff;
-}
-
-.message-bot .message {
-    background-color: var(--msg-bot-bg);
-    color: var(--msg-bot-text);
-    border-radius: 20px 20px 20px 4px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid rgba(0, 0, 0, 0.03);
-}
-
-.message-user .message {
-    background-color: var(--msg-user-bg);
-    color: var(--msg-user-text);
-    border-radius: 20px 20px 4px 20px;
-    box-shadow: 0 4px 14px rgba(165, 0, 52, 0.25);
-}
-
-.message-user .message-content-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 4px;
-}
-
-.edit-btn {
-    background: none;
-    border: none;
-    color: var(--primary-color);
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 2px 6px;
-    border-radius: 4px;
-    opacity: 0.6;
-    transition: opacity 0.2s, background-color 0.2s;
-    text-decoration: underline;
-}
-
-.edit-btn:hover {
-    opacity: 1;
-    background-color: rgba(165, 0, 52, 0.05);
-}
-
-/* Inline User Editing */
-.user-edit-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-}
-
-.user-edit-input {
-    width: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 12px;
-    font-size: 14px;
-    outline: none;
-    font-family: inherit;
-}
-
-.save-inline-btn {
-    align-self: flex-end;
-    background: white;
-    color: var(--primary-color);
-    border: none;
-    padding: 4px 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.save-inline-btn:hover {
-    background: #f8f8f8;
-}
-
-[data-depends-on] {
-    transition: all 0.3s ease;
+    (async () => {
+        await botSay('👋 안녕하세요, VS본부 구성원님!');
+        await botSay('저는 VS본부 타운홀 미팅 정보를 안내해드릴<br><strong>타운홀 요정..... "타요" 🧚</strong> 에요!');
+        await delay(400);
+        showChoices([
+            { text: '반가워 타요야! 👋', value: 'hello' },
+            { text: '뭐야... 너 누군데? 👀', value: 'who' }
+        ], handleGreetingChoice);
+        currentState = STATES.INTRO_GREETING;
+    })();
 }
 
 
-.chat-input-area {
-    background-color: #ffffff;
-    padding: 16px 20px 24px;
-    border-top: 1px solid var(--border-color);
-    z-index: 10;
-}
+// Event Listeners
+chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = userInput.value.trim();
+    if (!text) return;
 
-.text-input-form {
-    display: flex;
-    align-items: center;
-    background-color: #f7f8fa;
-    border-radius: 24px;
-    padding: 6px 6px 6px 18px;
-    border: 1px solid transparent;
-    transition: all 0.2s ease;
-}
+    addUserMessage(text, currentState);
+    userInput.value = '';
+    processUserInput(text);
+});
 
-.text-input-form:focus-within {
-    border-color: rgba(165, 0, 52, 0.3);
-    background-color: #ffffff;
-    box-shadow: 0 0 0 4px rgba(165, 0, 52, 0.05);
-}
+// Logic functions
+function processUserInput(text) {
+    dynamicInputContainer.classList.add('hidden');
 
-#user-input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    outline: none;
-    font-size: 15px;
-    padding: 10px 0;
-    color: var(--text-color);
-    font-family: inherit;
-}
-
-#user-input::placeholder {
-    color: #adb5bd;
-}
-
-#user-input:disabled {
-    color: var(--text-muted);
-}
-
-#send-button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
-    flex-shrink: 0;
-}
-
-#send-button:hover {
-    background-color: var(--primary-light);
-    box-shadow: 0 4px 10px rgba(165, 0, 52, 0.3);
-}
-
-#send-button:active {
-    transform: scale(0.95);
-}
-
-#send-button:disabled {
-    background-color: #e2e4e8;
-    cursor: not-allowed;
-    box-shadow: none;
-}
-
-/* Choice Buttons */
-.choice-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.choice-btn {
-    background-color: #ffffff;
-    border: 2px solid var(--primary-color);
-    color: var(--primary-color);
-    padding: 15px 20px;
-    border-radius: 14px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-    text-align: left;
-    font-family: inherit;
-    box-shadow: var(--shadow-sm);
-}
-
-.choice-btn:hover {
-    background-color: var(--primary-color);
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(165, 0, 52, 0.2);
-}
-
-.choice-btn:active {
-    transform: scale(0.98);
-}
-
-.hidden {
-    display: none !important;
-}
-
-@keyframes fadeIn {
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    switch (currentState) {
+        case STATES.ASK_NAME:
+            handleNameState(text);
+            break;
+        case STATES.WARMUP:
+            handleWarmupState(text);
+            break;
+        case STATES.Q2_GROWTH:
+            handleQ2State(text);
+            break;
+        case STATES.Q4_QUESTION:
+            handleQ4State(text);
+            break;
+        case STATES.PRIZE_EP_ID:
+            handlePrizeEpIdState(text);
+            break;
     }
 }
 
-/* Typing Indicator */
-.typing-indicator {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 6px 4px;
+function handleGreetingChoice(choiceData) {
+    addUserMessage(choiceData.text, currentState, true);
+    hideChoices();
+    updateProgress(12);
+
+    (async () => {
+        await botSay('저는 1분기 타운홀 미팅에 대한 정보를 드리고');
+        await botSay('여러분의 의견을 미리 들어보기 위해 왔어요! 😊');
+        await botSay('먼저, 구성원님을 어떻게 불러드리면 될까요?<br>👉 성함 또는 닉네임을 입력해주세요!');
+        currentState = STATES.ASK_NAME;
+        showTextInput();
+    })();
 }
 
-.dot {
-    width: 7px;
-    height: 7px;
-    background-color: #a0a0a0;
-    border-radius: 50%;
-    animation: bounce 1.4s infinite ease-in-out both;
+function handleNameState(nickname) {
+    surveyData.name = nickname;
+    updateProgress(25);
+
+    (async () => {
+        await botSay(`반가워요, <strong>${surveyData.name}</strong>님! 😄`, 'name', '반가워요, <strong>{name}</strong>님! 😄');
+        await botSay('혹시 <strong>Step out of your Comfort Zone</strong><br> 이라는 말 들어보셨나요? 🤔');
+        await botSay('Comfort Zone에서 느끼는 익숙함은 <br>우리에게 안정감과 편안함을 주지만');
+        await botSay('<strong>성장과 발전</strong>은 두려움을 이겨내고<br>익숙하던 것을 넘어설 때 일어난다고 합니다.<br><span style="color:#888; font-size:13px;">(심리학자 Judith Bardwick)</span>');
+        await botSay('....그래서!');
+        await botSay('이번 타운홀에서는 <br>VS본부가 <strong>Comfort Zone을 벗어나<br>어떤 변화와 성장을 만들어가는지</strong><br>이야기 나눌 예정입니다. 🙌');
+        await delay(400);
+        showChoices([
+            { text: '무슨 이야기 할 지 기대된다!! 🚀', value: 'yes' },
+            { text: '음...조금 어렵네..알겠어 🤔', value: 'maybe' }
+        ], handleComfortChoice);
+        currentState = STATES.INTRO_COMFORT;
+    })();
 }
 
-.dot:nth-child(1) {
-    animation-delay: -0.32s;
+function handleComfortChoice(choiceData) {
+    addUserMessage(choiceData.text, currentState, true);
+    surveyData.comfortZoneChoice = choiceData.text;
+    hideChoices();
+    updateProgress(38);
+
+    (async () => {
+        await botSay(`저와 함께 차근 차근 이야기 나눠봐요! 😎`);
+        await botSay('그럼 가볍게 몸풀기 질문 나갑니다! 🥁');
+        await botSay(`🌱 <strong>${surveyData.name}님이 올해 Comfort Zone을 벗어나기 위해 해보고 싶은 <u>딱 한 가지 행동</u>은 무엇인가요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예) '아주 작은 한 걸음'도 좋아요!<br>"다이어트 도전"<br>"매일 영어 단어 5개 외우기"<br>"AI 도구 매일 10분 써보기"</span>`, 'name', `🌱 <strong>{name}님이 올해 Comfort Zone을 벗어나기 위해 해보고 싶은 <u>딱 한 가지 행동</u>은 무엇인가요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예) '아주 작은 한 걸음'도 좋아요!<br>"다이어트 도전"<br>"매일 영어 단어 5개 외우기"<br>"AI 도구 매일 10분 써보기"</span>`);
+        currentState = STATES.WARMUP;
+        showTextInput();
+    })();
 }
 
-.dot:nth-child(2) {
-    animation-delay: -0.16s;
+function handleWarmupState(text) {
+    surveyData.warmupAnswer = text;
+    updateProgress(52);
+
+    (async () => {
+        await botSay('💪 멋있는 다짐이에요! 우리 꼭 실천해봐요!');
+        await botSay('그럼 이제 본격 질문 들어갑니다! 🥁');
+        await botSay(`Q1. <strong>${surveyData.name}님, VS본부가 Comfort Zone을 벗어나 성장하기 위해서는 어떤 노력이 필요하다고 생각하시나요?</strong><br><br>아래 중 하나를 선택해주세요!`, 'name', `<strong>{name}님은 VS본부가 Comfort Zone을 벗어나 성장하기 위해서는 어떤 노력이 필요하다고 생각하시나요?</strong><br><br>아래 중 하나를 선택해주세요!`);
+        await delay(300);
+        showChoices([
+            { text: '1️⃣ 수주 경쟁력 강화', value: '수주 경쟁력 강화' },
+            { text: '2️⃣ 외부 환경 변화 / 위기 대응', value: '외부 환경 변화/ 위기 대응' },
+            { text: '3️⃣ 적극적 AX 활용 확대', value: '적극적 AX 활용 확대' },
+            { text: '4️⃣ 협업 및 일하는 방식 개선', value: '협업 및 일하는 방식 개선' },
+            { text: '5️⃣ 기타 (직접 입력)', value: '기타' }
+        ], handleQ1Choice);
+        currentState = STATES.Q1_CHOICE;
+    })();
 }
 
-@keyframes bounce {
+function handleQ1Choice(choiceData) {
+    if (choiceData.value === '기타') {
+        choiceContainer.innerHTML = `
+            <div class="inline-input-wrapper">
+                <input type="text" class="inline-input" id="inline-q1-input" placeholder="성장을 위한 노력을 직접 입력해주세요" autocomplete="off">
+                <button class="inline-confirm-btn" id="inline-q1-confirm">확인</button>
+            </div>
+        `;
+        const inputEl = document.getElementById('inline-q1-input');
+        const confirmBtn = document.getElementById('inline-q1-confirm');
 
-    0%,
-    80%,
-    100% {
-        transform: scale(0);
-        opacity: 0.4;
+        setTimeout(() => inputEl.focus(), 100);
+
+        const handleConfirm = () => {
+            const val = inputEl.value.trim();
+            if (!val) return;
+            addUserMessage(val, STATES.Q1_CHOICE); // Keep edit for text
+            surveyData.q1Answer = val;
+            hideChoices();
+            proceedToQ2();
+        };
+
+        confirmBtn.onclick = handleConfirm;
+        inputEl.onkeydown = (e) => {
+            if (e.key === 'Enter') handleConfirm();
+        };
+    } else {
+        addUserMessage(choiceData.text, currentState, true); // Hide edit for choice
+        surveyData.q1Answer = choiceData.value;
+        hideChoices();
+        proceedToQ2();
+    }
+}
+
+function proceedToQ2() {
+    updateProgress(65);
+
+    (async () => {
+        await botSay(`<strong>${surveyData.name}</strong>님께서는 <strong>${surveyData.q1Answer}</strong>이(가) 필요하다고 생각하시는군요!`, 'name,q1Answer', `<strong>{name}</strong>님께서는 <strong>{q1Answer}</strong>이(가) 필요하다고 생각하시는군요!`);
+        await botSay('그렇다면....');
+        await botSay(`<strong>Q2. <u>${surveyData.q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 제품 포트폴리오 구성을 통한 수주 잔고 확대"<br>"AX 활용을 통한 개발 효율화"<br>"동료간 도움을 적극적으로 주고받음"</span>`, 'q1Answer', `<strong>Q2. <u>{q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 제품 포트폴리오 구성을 통한 수주 잔고 확대"<br>"AX 활용을 통한 개발 효율화"<br>"동료간 도움을 적극적으로 주고받음"</span>`);
+        currentState = STATES.Q2_GROWTH;
+        showTextInput();
+    })();
+}
+
+function handleQ2State(text) {
+    surveyData.q2Answer = text;
+    updateProgress(78);
+
+    (async () => {
+        await botSay('좋아요! 우리는 꼭 해낼 수 있을거에요 🍀');
+        await botSay('자, 이제 마지막 질문이에요. 조금만 더 화이팅! 💪');
+        await botSay('<strong>Q3. 타운홀 미팅에서 경영진에게 궁금하거나 듣고 싶은 이야기가 있으신가요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"1분기 경영 실적이 궁금해요"<br>"26년 본부 방향성이 궁금해요"</span>');
+        currentState = STATES.Q4_QUESTION;
+        showTextInput();
+    })();
+}
+
+function handleQ4State(text) {
+    surveyData.q4Answer = text;
+    updateProgress(90);
+
+    (async () => {
+        await botSay(`💚 <strong>${surveyData.name}</strong>님, 소중한 의견 들려줘서 고마워요!`, 'name', `💚 <strong>{name}</strong>님, 소중한 의견 들려줘서 고마워요!`);
+        await botSay('마지막으로,<br><br>저의 질문에 끝까지 답변해주신 분들께는<br>🎁 <strong>추첨을 통해 소정의 선물</strong>을 드리려고 해요!');
+        await botSay('EP ID를 입력해주시면 추첨에 참여하실 수 있어요!<br><span style="color:#888; font-size:13px;">(개인정보는 오직 선물 추첨을 위해 활용됩니다.)</span>');
+        showChoices([
+            { text: '건너뛰기 ⏭️', value: 'skip' }
+        ], handlePrizeEpIdState);
+        currentState = STATES.PRIZE_EP_ID;
+        showTextInput();
+    })();
+}
+
+function handlePrizeEpIdState(input) {
+    const text = typeof input === 'string' ? input : input.value;
+    if (typeof input !== 'string') {
+        addUserMessage(input.text, currentState, true);
     }
 
-    40% {
-        transform: scale(1);
-        opacity: 1;
+    hideChoices();
+
+    if (text !== 'skip' && text.trim() && text.trim() !== '건너뛰기' && text.trim() !== '건너뛰기 ⏭️') {
+        surveyData.epId = text;
+    } else {
+        surveyData.epId = '건너뛰기';
     }
+
+    updateProgress(100);
+    userInput.disabled = true;
+    sendButton.disabled = true;
+    userInput.placeholder = '서베이가 완료되었습니다.';
+    showTextInput();
+
+    (async () => {
+        await botSay('이제 정말 끝났어요! 🎉');
+        await botSay('마지막으로 타운홀 미팅 일정만 알려드릴게요.');
+        await botSay('📅 <strong>[타운홀 미팅 안내]</strong><br>일시: 3월 30일 월요일 15:00~16:50<br>장소/접속 방식 추후 안내 예정');
+        await botSay(`그럼 꼭 타운홀 미팅 현장에서 뵈어요, <strong>${surveyData.name}</strong>님! 🚀💙`, 'name', `그럼 꼭 타운홀 미팅 현장에서 뵈어요, <strong>{name}</strong>님! 🚀💙`);
+        await botSay('작성해주신 서베이 내용을 안전하게 전송하고 있어요... ⏳');
+        submitSurveyData();
+    })();
 }
 
-/* Inline Input for '기타' */
-.inline-input-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 15px;
-    background: #ffffff;
-    border: 2px solid var(--primary-color);
-    border-radius: 14px;
-    box-shadow: var(--shadow-sm);
-    animation: fadeIn 0.3s ease;
+// UI Helpers
+function showChoices(choices, callback) {
+    dynamicInputContainer.classList.add('hidden');
+    choiceContainer.innerHTML = '';
+
+    choices.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.innerHTML = choice.text;
+        btn.onclick = () => callback(choice);
+        choiceContainer.appendChild(btn);
+    });
+
+    choiceContainer.classList.remove('hidden');
+    scrollToBottom();
 }
 
-.inline-input {
-    width: 100%;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 15px;
-    font-family: inherit;
-    outline: none;
-    transition: border-color 0.2s;
+function hideChoices() {
+    choiceContainer.classList.add('hidden');
 }
 
-.inline-input:focus {
-    border-color: var(--primary-color);
+function showTextInput() {
+    dynamicInputContainer.classList.remove('hidden');
+    if (!userInput.disabled) {
+        setTimeout(() => userInput.focus(), 100);
+    }
+    scrollToBottom();
 }
 
-.inline-confirm-btn {
-    align-self: flex-end;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
+function addBotMessage(text, dependsOn = null, template = null) {
+    const msgHTML = `
+        <div class="message-wrapper message-bot">
+            <div class="message-content-wrapper">
+                <div class="bot-avatar" style="font-size: 22px; background-color: #fff0f3; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.2);">
+                   🐰
+                </div>
+                <div class="message" 
+                    ${dependsOn ? `data-depends-on="${dependsOn}"` : ''} 
+                    ${template ? `data-template='${template.replace(/'/g, "&apos;")}'` : ''}>
+                    ${text}
+                </div>
+            </div>
+        </div>
+    `;
+    chatMessages.insertAdjacentHTML('beforeend', msgHTML);
+    scrollToBottom();
 }
 
-.inline-confirm-btn:hover {
-    background-color: var(--primary-light);
+function addUserMessage(text, stateId, hideEdit = false) {
+    const msgHTML = `
+        <div class="message-wrapper message-user" data-state="${stateId}">
+            <div class="message-content-wrapper">
+                <div class="message">${text}</div>
+                ${hideEdit ? '' : `<button class="edit-btn" onclick="enableInlineEdit(${stateId}, this)">수정</button>`}
+            </div>
+        </div>
+    `;
+    chatMessages.insertAdjacentHTML('beforeend', msgHTML);
+    scrollToBottom();
+}
+
+function showTyping() {
+    const msgHTML = `
+        <div class="message-wrapper message-bot" id="typing-indicator">
+            <div class="message-content-wrapper">
+                <div class="bot-avatar" style="font-size: 22px; background-color: #fff0f3; box-shadow: 0 4px 10px rgba(165, 0, 52, 0.2);">
+                    🐰
+                </div>
+                <div class="message" style="padding: 10px 16px;">
+                    <div class="typing-indicator">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    chatMessages.insertAdjacentHTML('beforeend', msgHTML);
+    scrollToBottom();
+}
+
+function removeTyping() {
+    const el = document.getElementById('typing-indicator');
+    if (el) el.remove();
+}
+
+function scrollToBottom() {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Webhook API Integration (via Formspree Email Bridge)
+// TODO: Replace with your actual Formspree ID
+const ENDPOINT_URL = "https://formspree.io/f/xreyzvor";
+
+async function submitSurveyData() {
+    if (!ENDPOINT_URL || ENDPOINT_URL.includes("xreyzvor")) {
+        // Placeholder check - technically xreyzvor is my test ID, 
+        // but user might have replaced it. We'll allow it.
+    }
+
+    try {
+        const payload = {
+            "EP_ID": surveyData.epId,
+            "이름": surveyData.name,
+            "선택형답변": surveyData.comfortZoneChoice,
+            "워밍업": surveyData.warmupAnswer,
+            "Q1_본부성장노력": surveyData.q1Answer,
+            "Q2_성과모습": surveyData.q2Answer,
+            "Q3_질문사항": surveyData.q4Answer,
+            "제출시간": new Date().toLocaleString('ko-KR')
+        };
+
+        const response = await fetch(ENDPOINT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            setTimeout(() => {
+                showTyping();
+                setTimeout(() => {
+                    removeTyping();
+                    addBotMessage('✅ <strong>' + surveyData.name + '님의 따뜻한 의견이 성공적으로 엑셀에 기록되었어요!</strong><br>오늘 용기 내서 참여해주셔서 정말 고마워요! 💚', 'name', '✅ <strong>{name}</strong>님의 따뜻한 의견이 성공적으로 엑셀에 기록되었어요!<br>오늘 용기 내서 참여해주셔서 정말 고마워요! 💚');
+                    setTimeout(() => {
+                        const sysEndHTML = `<div class="system-message">"타요"님이 채팅방을 나가셨습니다.</div>`;
+                        chatMessages.insertAdjacentHTML('beforeend', sysEndHTML);
+                        scrollToBottom();
+                    }, 1500);
+                    currentState = STATES.OUTRO;
+                }, 1200);
+            }, 1000);
+        } else {
+            throw new Error('Network response was not ok.');
+        }
+
+    } catch (err) {
+        console.error("Survey submission failed:", err);
+        setTimeout(() => {
+            showTyping();
+            setTimeout(() => {
+                removeTyping();
+                addBotMessage('⚠️ 앗, 엑셀 전송 중 오류가 발생했어요. 잠시 후 다시 시도해주시거나 담당자에게 문의해 주세요.');
+                currentState = STATES.OUTRO;
+            }, 1200);
+        }, 1000);
+    }
 }
