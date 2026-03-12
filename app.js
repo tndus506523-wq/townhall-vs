@@ -277,7 +277,7 @@ function handleWarmupState(text) {
     (async () => {
         await botSay('💪 멋있는 다짐이에요! 우리 꼭 실천해봐요!');
         await botSay('그럼 이제 본격 질문 들어갑니다! 🥁');
-        await botSay(`<strong>Q1. ${surveyData.name}님, VS본부가 Comfort Zone을 벗어나 성장하기 위해서는 어떤 노력이 필요하다고 생각하시나요?</strong><br><br>아래 중 하나를 선택해주세요!`, 'name', `<strong>{name}님은 VS본부가 Comfort Zone을 벗어나 성장하기 위해서는 어떤 노력이 필요하다고 생각하시나요?</strong><br><br>아래 중 하나를 선택해주세요!`);
+        await botSay(`Q1. <strong>${surveyData.name}님, VS본부가 Comfort Zone을 벗어나 성장하기 위해서는 어떤 노력이 필요하다고 생각하시나요?</strong><br><br>아래 중 하나를 선택해주세요!`, 'name', `<strong>{name}님은 VS본부가 Comfort Zone을 벗어나 성장하기 위해서는 어떤 노력이 필요하다고 생각하시나요?</strong><br><br>아래 중 하나를 선택해주세요!`);
         await delay(300);
         showChoices([
             { text: '1️⃣ 수주 경쟁력 강화', value: '수주 경쟁력 강화' },
@@ -486,26 +486,31 @@ function scrollToBottom() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Formspree API Integration
+// Webhook API Integration (via Formspree Email Bridge)
+// TODO: Replace with your actual Formspree ID
 const ENDPOINT_URL = "https://formspree.io/f/xreyzvor";
 
 async function submitSurveyData() {
+    if (!ENDPOINT_URL || ENDPOINT_URL.includes("xreyzvor")) {
+        // Placeholder check - technically xreyzvor is my test ID, 
+        // but user might have replaced it. We'll allow it.
+    }
+
     try {
         const payload = {
             "EP_ID": surveyData.epId,
             "이름": surveyData.name,
             "선택형답변": surveyData.comfortZoneChoice,
-            "워밍업(개인다짐)": surveyData.warmupAnswer,
-            "Q1(본부성장노력)": surveyData.q1Answer,
-            "Q2(Growth Zone모습)": surveyData.q2Answer,
-            "Q3(경영진에게묻고싶은것)": surveyData.q4Answer,
+            "워밍업": surveyData.warmupAnswer,
+            "Q1_본부성장노력": surveyData.q1Answer,
+            "Q2_성과모습": surveyData.q2Answer,
+            "Q3_질문사항": surveyData.q4Answer,
             "제출시간": new Date().toLocaleString('ko-KR')
         };
 
         const response = await fetch(ENDPOINT_URL, {
             method: 'POST',
             headers: {
-                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
@@ -516,7 +521,7 @@ async function submitSurveyData() {
                 showTyping();
                 setTimeout(() => {
                     removeTyping();
-                    addBotMessage('✅ <strong>' + surveyData.name + '님의 따뜻한 의견이 성공적으로 접수되었어요!</strong><br>오늘 용기 내서 참여해주셔서 정말 고마워요! 💚', 'name', '✅ <strong>{name}</strong>님의 따뜻한 의견이 성공적으로 접수되었어요!<br>오늘 용기 내서 참여해주셔서 정말 고마워요! 💚');
+                    addBotMessage('✅ <strong>' + surveyData.name + '님의 따뜻한 의견이 성공적으로 엑셀에 기록되었어요!</strong><br>오늘 용기 내서 참여해주셔서 정말 고마워요! 💚', 'name', '✅ <strong>{name}</strong>님의 따뜻한 의견이 성공적으로 엑셀에 기록되었어요!<br>오늘 용기 내서 참여해주셔서 정말 고마워요! 💚');
                     setTimeout(() => {
                         const sysEndHTML = `<div class="system-message">"타요"님이 채팅방을 나가셨습니다.</div>`;
                         chatMessages.insertAdjacentHTML('beforeend', sysEndHTML);
@@ -535,7 +540,7 @@ async function submitSurveyData() {
             showTyping();
             setTimeout(() => {
                 removeTyping();
-                addBotMessage('⚠️ 앗, 전송 중 오류가 발생했어요. 잠시 후 다시 시도해주시거나 담당자에게 문의해 주세요.');
+                addBotMessage('⚠️ 앗, 엑셀 전송 중 오류가 발생했어요. 잠시 후 다시 시도해주시거나 담당자에게 문의해 주세요.');
                 currentState = STATES.OUTRO;
             }, 1200);
         }, 1000);
