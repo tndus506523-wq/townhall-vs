@@ -332,7 +332,7 @@ body {
 
 .message strong {
     font-weight: 700;
-    color: var(--primary-color);
+    color: #ff0000;
 }
 
 .message-user .message strong {
