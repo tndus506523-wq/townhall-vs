@@ -899,7 +899,8 @@
                 await botSay(`반가워요, <strong>${surveyData.name}</strong>님! 😄`, 'name', '반가워요, <strong>{name}</strong>님! 😄');
                 await botSay('혹시 <strong>Step out of your Comfort Zone</strong><br> 이라는 말 들어보셨나요? 🤔');
                 await botSay('Comfort Zone에서 느끼는 익숙함은 <br>우리에게 안정감과 편안함을 주지만');
-                await botSay('<strong>성장과 발전</strong>은 두려움을 이겨내고<br>익숙하던 것을 넘어설 때 일어난다고 합니다.');
+                await botSay('<strong>성장과 발전</strong>은 두려움을 이겨내고<br>익숙하던 것을 넘어설 때 일어난다고 합니다.<br><span style="color:#888; font-size:13px;">(심리학자 Judith Bardwick)</span>');
+                await botSay('....그래서!');
                 await botSay('이번 타운홀에서는 <br>VS본부가 <strong>Comfort Zone을 벗어나<br>어떤 변화와 성장을 만들어가는지</strong><br>이야기 나눌 예정입니다. 🙌');
                 await delay(400);
                 showChoices([{ text: '기대된다!! 🚀', value: 'yes' }, { text: '어렵네..알겠어 🤔', value: 'maybe' }], handleComfortChoice);
@@ -915,7 +916,7 @@
             (async () => {
                 await botSay(`저와 함께 차근 차근 이야기 나눠봐요! 😎`);
                 await botSay('그럼 가볍게 몸풀기 질문 나갑니다! 🥁');
-                await botSay(`🌱 <strong>${surveyData.name}님이 올해 Comfort Zone을 벗어나기 위해 해보고 싶은 <u>딱 한 가지 행동</u>은 무엇인가요?</strong>`, 'name', `🌱 <strong>{name}님이 올해 Comfort Zone을 벗어나기 위해 해보고 싶은 <u>딱 한 가지 행동</u>은 무엇인가요?</strong>`);
+                await botSay(`🌱 <strong>${surveyData.name}님이 올해 Comfort Zone을 벗어나기 위해 해보고 싶은 <u>딱 한 가지 행동</u>은 무엇인가요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예) '아주 작은 한 걸음'도 좋아요!<br>"다이어트 도전"<br>"매일 영어 단어 5개 외우기"<br>"AI 도구 매일 10분 써보기"</span>`, 'name', `🌱 <strong>{name}님이 올해 Comfort Zone을 벗어나기 위해 해보고 싶은 <u>딱 한 가지 행동</u>은 무엇인가요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예) '아주 작은 한 걸음'도 좋아요!<br>"다이어트 도전"<br>"매일 영어 단어 5개 외우기"<br>"AI 도구 매일 10분 써보기"</span>`);
                 currentState = STATES.WARMUP;
                 showTextInput();
             })();
@@ -967,7 +968,8 @@
             updateProgress(65);
             (async () => {
                 await botSay(`<strong>${surveyData.name}</strong>님께서는 <strong>${surveyData.q1Answer}</strong>이(가) 필요하다고 생각하시는군요!`, 'name,q1Answer', `<strong>{name}</strong>님께서는 <strong>{q1Answer}</strong>이(가) 필요하다고 생각하시는군요!`);
-                await botSay(`<strong>Q2. <u>${surveyData.q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong>`, 'q1Answer', `<strong>Q2. <u>{q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong>`);
+                await botSay('그렇다면....');
+                await botSay(`<strong>Q2. <u>${surveyData.q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 제품 포트폴리오 구성을 통한 수주 잔고 확대"<br>"AX 활용을 통한 개발 효율화"<br>"동료간 도움을 적극적으로 주고받음"</span>`, 'q1Answer', `<strong>Q2. <u>{q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 제품 포트폴리오 구성을 통한 수주 잔고 확대"<br>"AX 활용을 통한 개발 효율화"<br>"동료간 도움을 적극적으로 주고받음"</span>`);
                 currentState = STATES.Q2_GROWTH;
                 showTextInput();
             })();
@@ -979,7 +981,7 @@
             (async () => {
                 await botSay('좋아요! 우리는 꼭 해낼 수 있을거에요 🍀');
                 await botSay('자, 이제 마지막 질문이에요. 조금만 더 화이팅! 💪');
-                await botSay('<strong>Q3. 타운홀 미팅에서 경영진에게 궁금하거나 듣고 싶은 이야기가 있으신가요?</strong>');
+                await botSay('<strong>Q3. 타운홀 미팅에서 경영진에게 궁금하거나 듣고 싶은 이야기가 있으신가요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"1분기 경영 실적이 궁금해요"<br>"26년 본부 방향성이 궁금해요"</span>');
                 currentState = STATES.Q4_QUESTION;
                 showTextInput();
             })();
@@ -990,7 +992,8 @@
             updateProgress(90);
             (async () => {
                 await botSay(`💚 <strong>${surveyData.name}</strong>님, 소중한 의견 들려줘서 고마워요!`, 'name', `💚 <strong>{name}</strong>님, 소중한 의견 들려줘서 고마워요!`);
-                await botSay('추첨을 통해 소정의 선물을 드리려고 해요! EP ID를 입력해주세요.');
+                await botSay('마지막으로,<br><br>저의 질문에 끝까지 답변해주신 분들께는<br>🎁 <strong>추첨을 통해 소정의 선물</strong>을 드리려고 해요!');
+                await botSay('EP ID를 입력해주시면 추첨에 참여하실 수 있어요!<br><span style="color:#888; font-size:13px;">(개인정보는 오직 선물 추첨을 위해 활용됩니다.)</span>');
                 showChoices([{ text: '건너뛰기 ⏭️', value: 'skip' }], handlePrizeEpIdState);
                 currentState = STATES.PRIZE_EP_ID;
                 showTextInput();
