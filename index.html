@@ -645,7 +645,7 @@
             <p class="cover-sub">VS본부 타운홀 미팅</p>
             <h1 class="cover-title" style="font-family: 'Gaegu', cursive; font-size: 2.6rem; letter-spacing: 1px;">사전
                 서베이 바로가기</h1>
-            <div class="cover-date-badge">참여기간 : 3/17(금) ~ 3/19(수)</div>
+            <div class="cover-date-badge">참여기간 : 3/16(월) ~ 3/20(금)</div>
             <button id="start-btn" onclick="startSurvey()">시작하기 🚀</button>
         </div>
     </div>
@@ -806,7 +806,7 @@
 
         async function botSay(text, dependsOn = null, template = null) {
             showTyping();
-            await delay(1000);
+            await delay(600);
             removeTyping();
             addBotMessage(text, dependsOn, template);
         }
@@ -1100,7 +1100,7 @@
                 const payload = { "EP_ID": surveyData.epId, "이름": surveyData.name, "선택형답변": surveyData.comfortZoneChoice, "워밍업": surveyData.warmupAnswer, "Q1_본부성장노력": surveyData.q1Answer, "Q2_성과모습": surveyData.q2Answer, "Q3_질문사항": surveyData.q4Answer, "제출시간": new Date().toLocaleString('ko-KR') };
                 const response = await fetch(ENDPOINT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                 if (response.ok) {
-                    await delay(1000);
+                    await delay(600);
                     addBotMessage('✅ <strong>' + surveyData.name + '님의 의견이 성공적으로 기록되었어요!</strong> 💚', 'name', '✅ <strong>{name}</strong>님의 의견이 성공적으로 기록되었어요! 💚');
                     setTimeout(() => { chatMessages.insertAdjacentHTML('beforeend', `<div class="system-message">타운홀 미팅 서베이가 종료되었습니다.</div>`); scrollToBottom(); }, 1500);
                 } else { throw new Error('Network response was not ok.'); }
