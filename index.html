@@ -779,6 +779,22 @@
             setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
+        userInput.addEventListener('focus', () => {
+            if (currentState === STATES.Q1_CHOICE) {
+                showQ1Choices();
+            }
+        });
+
+        function showQ1Choices() {
+            showChoices([
+                { text: '1️⃣ 수주 경쟁력 강화', value: '수주 경쟁력 강화' },
+                { text: '2️⃣ 외부 환경 / 위기 대응', value: '외부 환경 / 위기 대응' },
+                { text: '3️⃣ AX 활용 확대', value: 'AX 활용 확대' },
+                { text: '4️⃣ 협업 및 일하는 방식 개선', value: '협업 및 일하는 방식 개선' },
+                { text: '5️⃣ 기타 (직접 입력)', value: '기타' }
+            ], handleQ1Choice);
+        }
+
         function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
         async function botSay(text, dependsOn = null, template = null) {
@@ -928,15 +944,10 @@
             (async () => {
                 await botSay('💪 멋있는 다짐이에요!');
                 await botSay('그럼 이제 본격 질문 들어갑니다! 🥁');
-                await botSay(`<strong>Q1. ${surveyData.name}님,<br>VS본부가 Comfort Zone에서 벗어난 <br>변화와 성장을 만들어가기 위해서는<br>어떤 노력이 필요하다고 생각하시나요?</strong>`, 'name', `<strong>Q1. {name}님,<br>VS본부가 Comfort Zone에서 벗어난 <br>변화와 성장을 만들어가기 위해서는<br>어떤 노력이 필요하다고 생각하시나요?</strong>`);
-                showChoices([
-                    { text: '1️⃣ 수주 경쟁력 강화', value: '수주 경쟁력 강화' },
-                    { text: '2️⃣ 외부 환경 / 위기 대응', value: '외부 환경 / 위기 대응' },
-                    { text: '3️⃣ AX 활용 확대', value: 'AX 활용 확대' },
-                    { text: '4️⃣ 협업 및 일하는 방식 개선', value: '협업 및 일하는 방식 개선' },
-                    { text: '5️⃣ 기타 (직접 입력)', value: '기타' }
-                ], handleQ1Choice);
+                await botSay(`<strong>Q1. ${surveyData.name}님,<br>VS본부가 Comfort Zone에서 벗어난 <br>변화와 성장을 만들어가기 위해서는<br><u>어떤 노력이 필요하다고 생각</u>하시나요?</strong>`, 'name', `<strong>Q1. {name}님,<br>VS본부가 Comfort Zone에서 벗어난 <br>변화와 성장을 만들어가기 위해서는<br><u>어떤 노력이 필요하다고 생각</u>하시나요?</strong>`);
                 currentState = STATES.Q1_CHOICE;
+                showTextInput();
+                userInput.placeholder = "클릭하여 보기를 선택해주세요";
             })();
         }
 
@@ -1032,7 +1043,10 @@
             scrollToBottom();
         }
 
-        function hideChoices() { choiceContainer.classList.add('hidden'); }
+        function hideChoices() {
+            choiceContainer.classList.add('hidden');
+            userInput.placeholder = "메시지를 입력하세요";
+        }
         function showTextInput() {
             dynamicInputContainer.classList.remove('hidden');
             if (!userInput.disabled) setTimeout(() => userInput.focus(), 100);
