@@ -779,8 +779,15 @@
             setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
-        userInput.addEventListener('focus', () => {
+        userInput.addEventListener('click', () => {
             if (currentState === STATES.Q1_CHOICE) {
+                showQ1Choices();
+            }
+        });
+
+        // Also trigger on focus if user tabs to it
+        userInput.addEventListener('focus', () => {
+            if (currentState === STATES.Q1_CHOICE && choiceContainer.classList.contains('hidden')) {
                 showQ1Choices();
             }
         });
@@ -946,7 +953,7 @@
                 await botSay('그럼 이제 본격 질문 들어갑니다! 🥁');
                 await botSay(`<strong>Q1. ${surveyData.name}님,<br>VS본부가 Comfort Zone에서 벗어난 <br>변화와 성장을 만들어가기 위해서는<br><u>어떤 노력이 필요하다고 생각</u>하시나요?</strong>`, 'name', `<strong>Q1. {name}님,<br>VS본부가 Comfort Zone에서 벗어난 <br>변화와 성장을 만들어가기 위해서는<br><u>어떤 노력이 필요하다고 생각</u>하시나요?</strong>`);
                 currentState = STATES.Q1_CHOICE;
-                showTextInput();
+                showTextInput(true); // skipFocus=true
                 userInput.placeholder = "클릭하여 보기를 선택해주세요";
             })();
         }
@@ -980,7 +987,7 @@
             (async () => {
                 await botSay(`<strong>${surveyData.name}</strong>님께서는 <strong>${surveyData.q1Answer}</strong>이(가) 필요하다고 생각하시는군요!`, 'name,q1Answer', `<strong>{name}</strong>님께서는 <strong>{q1Answer}</strong>이(가) 필요하다고 생각하시는군요!`);
                 await botSay('그렇다면....');
-                await botSay(`<strong>Q2. <u>${surveyData.q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 기술을 통해 경쟁력 확보하는 VS본부"<br>"AX 활용을 통한 개발 효율화를 이뤄낸 VS본부"<br>"동료간 도움을 적극적으로 주고받는 VS본부"</span>`, 'q1Answer', `<strong>Q2. <u>{q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 기술을 통해 경쟁력 확보하는 VS본부"<br>"AX 활용을 통한 개발 효율화를 이뤄낸 VS본부"<br>"동료간 도움을 적극적으로 주고받는 VS본부"</span>`);
+                await botSay(`<strong>Q2. <u>${surveyData.q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 기술 개발을 통해 수주 경쟁력 확보하는 VS본부"<br>"AX 활용을 통한 개발 효율화를 이뤄낸 VS본부"<br>"동료간 도움을 적극적으로 주고받는 VS본부"</span>`, 'q1Answer', `<strong>Q2. <u>{q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 기술 개발을 통해 수주 경쟁력 확보하는 VS본부"<br>"AX 활용을 통한 개발 효율화를 이뤄낸 VS본부"<br>"동료간 도움을 적극적으로 주고받는 VS본부"</span>`);
                 currentState = STATES.Q2_GROWTH;
                 showTextInput();
             })();
@@ -1047,9 +1054,9 @@
             choiceContainer.classList.add('hidden');
             userInput.placeholder = "메시지를 입력하세요";
         }
-        function showTextInput() {
+        function showTextInput(skipFocus = false) {
             dynamicInputContainer.classList.remove('hidden');
-            if (!userInput.disabled) setTimeout(() => userInput.focus(), 100);
+            if (!userInput.disabled && !skipFocus) setTimeout(() => userInput.focus(), 100);
             scrollToBottom();
         }
 
