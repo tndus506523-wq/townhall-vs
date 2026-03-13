@@ -872,7 +872,7 @@
             scrollToBottom();
             (async () => {
                 await botSay('👋 안녕하세요, VS본부 구성원님!');
-                await botSay('저는 VS본부 타운홀 미팅 정보를 안내해드릴<br><strong>타운홀 요정..... "타요" 🧚</strong> 에요!');
+                await botSay('저는 VS본부 타운홀 미팅 정보를 안내해드릴<br><strong>타운홀 요정..... "타요" 🚌🧚</strong> 에요!');
                 await delay(400);
                 showChoices([
                     { text: '반가워 타요야! 👋', value: 'hello' },
@@ -1102,7 +1102,7 @@
                 if (response.ok) {
                     await delay(1000);
                     addBotMessage('✅ <strong>' + surveyData.name + '님의 의견이 성공적으로 기록되었어요!</strong> 💚', 'name', '✅ <strong>{name}</strong>님의 의견이 성공적으로 기록되었어요! 💚');
-                    setTimeout(() => { chatMessages.insertAdjacentHTML('beforeend', `<div class="system-message">"타요"님이 채팅방을 나가셨습니다.</div>`); scrollToBottom(); }, 1500);
+                    setTimeout(() => { chatMessages.insertAdjacentHTML('beforeend', `<div class="system-message">타운홀 미팅 서베이가 종료되었습니다.</div>`); scrollToBottom(); }, 1500);
                 } else { throw new Error('Network response was not ok.'); }
             } catch (err) {
                 console.error("Survey submission failed:", err);
