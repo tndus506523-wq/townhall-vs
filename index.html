@@ -980,7 +980,7 @@
             (async () => {
                 await botSay(`<strong>${surveyData.name}</strong>님께서는 <strong>${surveyData.q1Answer}</strong>이(가) 필요하다고 생각하시는군요!`, 'name,q1Answer', `<strong>{name}</strong>님께서는 <strong>{q1Answer}</strong>이(가) 필요하다고 생각하시는군요!`);
                 await botSay('그렇다면....');
-                await botSay(`<strong>Q2. <u>${surveyData.q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 기술 개발을 통해 수주 경쟁력 확보하는 VS본부"<br>"AX 활용을 통한 개발 효율화를 이뤄낸 VS본부"<br>"동료간 도움을 적극적으로 주고받는 VS본부"</span>`, 'q1Answer', `<strong>Q2. <u>{q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 기술 개발을 통해 수주 경쟁력 확보하는 VS본부"<br>"AX 활용을 통한 개발 효율화를 이뤄낸 VS본부"<br>"동료간 도움을 적극적으로 주고받는 VS본부"</span>`);
+                await botSay(`<strong>Q2. <u>${surveyData.q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 기술을 통해 경쟁력 확보하는 VS본부"<br>"AX 활용을 통한 개발 효율화를 이뤄낸 VS본부"<br>"동료간 도움을 적극적으로 주고받는 VS본부"</span>`, 'q1Answer', `<strong>Q2. <u>{q1Answer}</u>을(를) 통해 성장한 VS본부의 모습은 어떨까요?</strong><br><br><span style="color:#888; font-size:13px;">📝 예)<br>"혁신적인 기술을 통해 경쟁력 확보하는 VS본부"<br>"AX 활용을 통한 개발 효율화를 이뤄낸 VS본부"<br>"동료간 도움을 적극적으로 주고받는 VS본부"</span>`);
                 currentState = STATES.Q2_GROWTH;
                 showTextInput();
             })();
